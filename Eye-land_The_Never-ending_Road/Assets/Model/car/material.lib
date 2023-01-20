@@ -1,0 +1,233 @@
+# Aspose.3D Wavefront OBJ Exporter
+# Copyright 2004-2022 Aspose Pty Ltd.
+# File created: 01/20/2023 01:27:49
+
+newmtl Material_001
+	Ka 0.2 0.2 0.2
+	Kd 1 1 1
+	d 1
+	Tr 0
+	illum 2
+	Ks 0.2 0.2 0.2
+	Ns 20
+newmtl Material_002
+	Ka 0.2 0.2 0.2
+	Kd 0.01331429276615381 0.01331429276615381 0.01331429276615381
+	d 1
+	Tr 0
+	illum 2
+	Ks 0.2 0.2 0.2
+	Ns 20
+newmtl Material_006
+	Ka 0.2 0.2 0.2
+	Kd 1 1 1
+	d 1
+	Tr 0
+	illum 2
+	Ks 0.2 0.2 0.2
+	Ns 20
+	map_Kd Material.006_baseColor.jpg
+newmtl Material_007
+	Ka 0.2 0.2 0.2
+	Kd 1 0.2438378632068634 0
+	d 1
+	Tr 0
+	illum 2
+	Ks 0.2 0.2 0.2
+	Ns 20
+newmtl Material_005
+	Ka 0.2 0.2 0.2
+	Kd 1 1 1
+	d 1
+	Tr 0
+	illum 2
+	Ks 0.2 0.2 0.2
+	Ns 20
+newmtl Material_011
+	Ka 0.2 0.2 0.2
+	Kd 0.06629839539527893 0.06845555454492569 0.06935713440179825
+	d 1
+	Tr 0
+	illum 2
+	Ks 0.2 0.2 0.2
+	Ns 20
+newmtl Material_012
+	Ka 0.2 0.2 0.2
+	Kd 1 1 1
+	d 1
+	Tr 0
+	illum 2
+	Ks 0.2 0.2 0.2
+	Ns 20
+newmtl Material_013
+	Ka 0.2 0.2 0.2
+	Kd 0 0 0
+	d 1
+	Tr 0
+	illum 2
+	Ks 0.2 0.2 0.2
+	Ns 20
+newmtl Material_014
+	Ka 0.2 0.2 0.2
+	Kd 1 1 1
+	d 1
+	Tr 0
+	illum 2
+	Ks 0.2 0.2 0.2
+	Ns 20
+	map_Kd Material.006_baseColor.jpg
+newmtl Material_003
+	Ka 0.2 0.2 0.2
+	Kd 0.0364309623837471 0.03582057729363441 0.03582057729363441
+	d 1
+	Tr 0
+	illum 2
+	Ks 0.2 0.2 0.2
+	Ns 20
+newmtl Material_004
+	Ka 0.2 0.2 0.2
+	Kd 0.02760693989694118 0.02760693989694118 0.02760693989694118
+	d 1
+	Tr 0
+	illum 2
+	Ks 0.2 0.2 0.2
+	Ns 20
+newmtl Material_020
+	Ka 0.2 0.2 0.2
+	Kd 0.04011232778429985 0.04011232778429985 0.04011232778429985
+	d 1
+	Tr 0
+	illum 2
+	Ks 0.2 0.2 0.2
+	Ns 20
+newmtl Material_003
+	Ka 0.2 0.2 0.2
+	Kd 0.0364309623837471 0.03582057729363441 0.03582057729363441
+	d 1
+	Tr 0
+	illum 2
+	Ks 0.2 0.2 0.2
+	Ns 20
+newmtl Material_004
+	Ka 0.2 0.2 0.2
+	Kd 0.02760693989694118 0.02760693989694118 0.02760693989694118
+	d 1
+	Tr 0
+	illum 2
+	Ks 0.2 0.2 0.2
+	Ns 20
+newmtl Material_020
+	Ka 0.2 0.2 0.2
+	Kd 0.04011232778429985 0.04011232778429985 0.04011232778429985
+	d 1
+	Tr 0
+	illum 2
+	Ks 0.2 0.2 0.2
+	Ns 20
+newmtl Material_003
+	Ka 0.2 0.2 0.2
+	Kd 0.0364309623837471 0.03582057729363441 0.03582057729363441
+	d 1
+	Tr 0
+	illum 2
+	Ks 0.2 0.2 0.2
+	Ns 20
+newmtl Material_004
+	Ka 0.2 0.2 0.2
+	Kd 0.02760693989694118 0.02760693989694118 0.02760693989694118
+	d 1
+	Tr 0
+	illum 2
+	Ks 0.2 0.2 0.2
+	Ns 20
+newmtl Material_020
+	Ka 0.2 0.2 0.2
+	Kd 0.04011232778429985 0.04011232778429985 0.04011232778429985
+	d 1
+	Tr 0
+	illum 2
+	Ks 0.2 0.2 0.2
+	Ns 20
+newmtl Material_003
+	Ka 0.2 0.2 0.2
+	Kd 0.0364309623837471 0.03582057729363441 0.03582057729363441
+	d 1
+	Tr 0
+	illum 2
+	Ks 0.2 0.2 0.2
+	Ns 20
+newmtl Material_004
+	Ka 0.2 0.2 0.2
+	Kd 0.02760693989694118 0.02760693989694118 0.02760693989694118
+	d 1
+	Tr 0
+	illum 2
+	Ks 0.2 0.2 0.2
+	Ns 20
+newmtl Material_020
+	Ka 0.2 0.2 0.2
+	Kd 0.04011232778429985 0.04011232778429985 0.04011232778429985
+	d 1
+	Tr 0
+	illum 2
+	Ks 0.2 0.2 0.2
+	Ns 20
+newmtl fpostersmallwall_textureproduct750x1000
+	Ka 0.2 0.2 0.2
+	Kd 1 1 1
+	d 1
+	Tr 0
+	illum 2
+	Ks 0.2 0.2 0.2
+	Ns 20
+	map_Kd fpostersmallwall_textureproduct750x1000_baseColor.jpg
+newmtl Material_010
+	Ka 0.2 0.2 0.2
+	Kd 0 0.07815172523260117 0.00521306786686182
+	d 1
+	Tr 0
+	illum 2
+	Ks 0.2 0.2 0.2
+	Ns 20
+newmtl fpostersmallwall_textureproduct750x1000
+	Ka 0.2 0.2 0.2
+	Kd 1 1 1
+	d 1
+	Tr 0
+	illum 2
+	Ks 0.2 0.2 0.2
+	Ns 20
+	map_Kd fpostersmallwall_textureproduct750x1000_baseColor.jpg
+newmtl Material_010
+	Ka 0.2 0.2 0.2
+	Kd 0 0.07815172523260117 0.00521306786686182
+	d 1
+	Tr 0
+	illum 2
+	Ks 0.2 0.2 0.2
+	Ns 20
+newmtl Material_002
+	Ka 0.2 0.2 0.2
+	Kd 0.01331429276615381 0.01331429276615381 0.01331429276615381
+	d 1
+	Tr 0
+	illum 2
+	Ks 0.2 0.2 0.2
+	Ns 20
+newmtl tofu_shop_002
+	Ka 0.2 0.2 0.2
+	Kd 1 1 1
+	d 1
+	Tr 0
+	illum 2
+	Ks 0.2 0.2 0.2
+	Ns 20
+	map_Kd tofu_shop.002_baseColor_cutoff136.png
+newmtl Material_013
+	Ka 0.2 0.2 0.2
+	Kd 0 0 0
+	d 1
+	Tr 0
+	illum 2
+	Ks 0.2 0.2 0.2
+	Ns 20

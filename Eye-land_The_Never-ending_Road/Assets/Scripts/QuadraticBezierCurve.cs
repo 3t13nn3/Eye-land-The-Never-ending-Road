@@ -89,8 +89,9 @@ public class QuadraticBezierCurve : MonoBehaviour {
         _uv = uv;
         _triangles = triangles;
 
-        _renderer.material.color = Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
-        
+        //_renderer.material.color = Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
+
+        _renderer.material.color = new Color(0.5f, 0.78f, 0.31f);
     }
 
     // EZ Debug with controls points
@@ -165,3 +166,88 @@ public class QuadraticBezierCurve : MonoBehaviour {
         renderer.material.color = Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
     }
 }
+
+
+    // Processing Bezier formula for each t, then transform that into Mesh
+    // public void GenerateBezierRoad() {
+    //     Vector3[] vertices = new Vector3[_resolution * 2];
+    //     Vector2[] uv = new Vector2[_resolution * 2];
+    //     int[] triangles = new int[(_resolution - 1) * 6];
+
+    //     for (int i = 0; i < _resolution; i++) {
+    //         float t = (float)i / (_resolution - 1);
+    //         Vector3 point = CalculateBezierPoint(this._points[0], this._points[1], this._points[2], this._points[3], t);
+    //         Vector3 direction = CalculateBezierDirection(this._points[0], this._points[1], this._points[2], this._points[3], t);
+    //         Vector3 normal = Vector3.Cross(direction, Vector3.up).normalized;
+    //         // Debug.Log(point);
+    //         // Debug.Log(direction);
+    //         vertices[i * 2] = point - normal * _width / 2;
+    //         vertices[i * 2 + 1] = point + normal * _width / 2;
+    //         uv[i * 2] = new Vector2(0, t);
+    //         uv[i * 2 + 1] = new Vector2(1, t);
+
+    //         if (i > 0) {
+    //             int index = (i - 1) * 6;
+    //             triangles[index] = i * 2 - 2;
+    //             triangles[index + 1] = i * 2 - 1;
+    //             triangles[index + 2] = i * 2;
+    //             triangles[index + 3] = i * 2 + 1;
+    //             triangles[index + 4] = i * 2;
+    //             triangles[index + 5] = i * 2 - 1;
+    //         }
+    //     }
+      
+    //     // Add thickness to the road by adding additional vertices and triangles
+    //     Vector3[] verticesWithThickness = new Vector3[vertices.Length * 2];
+    //     for (int i = 0; i < vertices.Length; i++) {
+    //         verticesWithThickness[i] = vertices[i];
+    //         verticesWithThickness[i + vertices.Length] = vertices[i] + new Vector3(0, _thickness, 0);
+    //     }
+
+    //     // Add triangles for the additional vertices
+    //     int[] trianglesWithThickness = new int[triangles.Length + (_resolution - 1) * 12];
+    //     for (int i = 0; i < triangles.Length; i++) {
+    //     trianglesWithThickness[i] = triangles[i];
+    //     }
+        
+    //     int baseIndex = triangles.Length;
+    //     for (int i = 0; i < _resolution - 1; i++) {
+    //         int index = i * 4;
+    //         int newIndex = baseIndex + i * 12;
+    //         // Triangles supérieurs
+    //         trianglesWithThickness[newIndex] = index + 2;
+    //         trianglesWithThickness[newIndex + 1] = index + 3;
+    //         trianglesWithThickness[newIndex + 2] = index + 6;
+    //         trianglesWithThickness[newIndex + 3] = index + 7;
+    //         trianglesWithThickness[newIndex + 4] = index + 6;
+    //         trianglesWithThickness[newIndex + 5] = index + 3;
+
+    //         // Triangles latéraux
+    //         trianglesWithThickness[newIndex + 6] = index;
+    //         trianglesWithThickness[newIndex + 7] = index + 2;
+    //         trianglesWithThickness[newIndex + 8] = index + 6;
+    //         trianglesWithThickness[newIndex + 9] = index + 1;
+    //         trianglesWithThickness[newIndex + 10] = index + 3;
+    //         trianglesWithThickness[newIndex + 11] = index + 7;
+    //     }
+    //     Vector2[] uvWithThickness = new Vector2[verticesWithThickness.Length];
+    //         for (int i = 0; i < _resolution * 2; i++) {
+    //         uvWithThickness[i] = uv[i];
+    //         uvWithThickness[i + _resolution * 2] = uv[i];
+    //     }
+    //     GameObject go = new GameObject();
+    //     _filter = go.AddComponent<MeshFilter>();
+    //     _renderer = go.AddComponent<MeshRenderer>();
+    //     _mesh = new Mesh();
+    //     _filter.mesh = _mesh;
+
+    //     _mesh.vertices = verticesWithThickness;
+    //     _mesh.triangles = trianglesWithThickness;
+    //     _mesh.RecalculateNormals();
+    //     _mesh.RecalculateBounds();
+
+    //     _mesh.uv = uvWithThickness;
+
+    //     _renderer.material.color = Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
+
+    // }
