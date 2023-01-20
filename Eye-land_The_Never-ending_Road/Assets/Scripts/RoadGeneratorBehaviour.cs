@@ -20,7 +20,7 @@ public class RoadGeneratorBehaviour : MonoBehaviour
     private List<int> _directionHistory = new List<int>();
 
     private List<QuadraticBezierCurve> _allCurves = new List<QuadraticBezierCurve>();
-    public Vector3[] _allPoints;
+    public List<List<GameObject>> _allEnv = new List<List<GameObject>>();
 
     // Based on previous tile. Generate a new tile to append and continue the road
     private void GenerateNextTile() {
@@ -51,8 +51,8 @@ public class RoadGeneratorBehaviour : MonoBehaviour
         this._directionHistory.Add(nextDirection);
         this._tile.transform.position = new Vector3(xOffset, 0.5f, zOffset);
         this._tile.transform.localScale = new Vector3 (this._tileDimension.x, this._tileThickness, this._tileDimension.y);
-        Instantiate(this._tile);
-        this._roadTiles.Add(this._tile);
+        GameObject instance = Instantiate(this._tile);
+        this._roadTiles.Add(instance);
     }
 
     // Generate the road on a certain Tile, based on the previous one
@@ -99,7 +99,7 @@ public class RoadGeneratorBehaviour : MonoBehaviour
         c.GenerateBezierRoad();
     }
 
-    private void ProcessEnvTils(bool nonOverlap, float x, float z, int nbTiles, int offsetDirection) {
+    private void ProcessEnvTils(bool nonOverlap, float x, float z, int nbTiles, int offsetDirection, List<GameObject> envGO) {
         if(nonOverlap) {
             for (int i = 1; i < nbTiles; i++) {
                 float r = (float)Random.Range(1, 100)/100;
@@ -112,40 +112,44 @@ public class RoadGeneratorBehaviour : MonoBehaviour
                 this._tile.transform.localScale = new Vector3 (this._tileDimension.x, this._tileThickness * rand, this._tileDimension.y);
                 GameObject instance = Instantiate(this._tile);
                 instance.GetComponent<Renderer>().material.color = new Color(r, g, b);
-                
+                envGO.Add(instance);
+
                 // Effet sympa
                 if (Random.Range(1, 5) == 1)
                 {
                     this._tile.transform.position = new Vector3(x + offsetDirection * this._tileDimension.x * i, 0.5f + rand, this._tile.transform.position.z);
-                    instance = Instantiate(this._tile);
-                    instance.GetComponent<Renderer>().material.color = new Color(r, g, b);
+                    GameObject instanceDecor = Instantiate(this._tile);
+                    instanceDecor.GetComponent<Renderer>().material.color = new Color(r, g, b);
+                    envGO.Add(instanceDecor);
                 }
 
             }
         }
     }
 
-    void GenerateEnv() {
-        this._tile.transform.position = new Vector3(0f, 0.5f, 0f);
+    void GenerateEnv(int nbTiles) {
+        this._tile.transform.position = this._roadTiles[this._roadTiles.Count - nbTiles].transform.position;
 
-        for (int k = 0; k < this._directionHistory.Count(); k++) {
+        for (int k = this._roadTiles.Count - nbTiles; k < this._directionHistory.Count() -1; k++) {
             
             float x = this._tile.transform.position.x;
             float z = this._tile.transform.position.z;
 
-            
+            List<GameObject> envGO = new List<GameObject>();
             bool nonOverlap = (k > 0 && k < this._directionHistory.Count() - 1 &&
                                 this._directionHistory[k] != (int)Direction.EAST &&
                                 this._directionHistory[k-1] != (int)Direction.WEST);
             
-            ProcessEnvTils(nonOverlap, x, z, 10, 1);
+            ProcessEnvTils(nonOverlap, x, z, 10, 1, envGO);
 
             // width
             nonOverlap = (k > 0 && k < this._directionHistory.Count() - 1 &&
                             this._directionHistory[k] != (int)Direction.WEST &&
                             this._directionHistory[k-1] != (int)Direction.EAST);
-            ProcessEnvTils(nonOverlap, x, z, 10, -1);                
-                
+            ProcessEnvTils(nonOverlap, x, z, 10, -1, envGO);                
+            
+            this._allEnv.Add(envGO);
+
             if (this._directionHistory[k] == (int)Direction.WEST) {
                 x -= this._tileDimension.x;
             } else if (this._directionHistory[k] == (int)Direction.NORTH) {
@@ -165,8 +169,8 @@ public class RoadGeneratorBehaviour : MonoBehaviour
         {
             this._tile.transform.position = new Vector3(0f, 0.5f, 0f);
             this._tile.transform.localScale = new Vector3 (this._tileDimension.x, this._tileThickness, this._tileDimension.y);
-            Instantiate(this._tile);
-            this._roadTiles.Add(this._tile);
+            GameObject instance = Instantiate(this._tile);
+            this._roadTiles.Add(instance);
             this._directionHistory.Add((int)Direction.NORTH);
 
             QuadraticBezierCurve c = gameObject.AddComponent<QuadraticBezierCurve>();
@@ -187,7 +191,7 @@ public class RoadGeneratorBehaviour : MonoBehaviour
             GenerateRoad(i);
         }
 
-        GenerateEnv();
+        GenerateEnv(100);
         /*
         // Generating all the road as one object
         QuadraticBezierCurve ccc = gameObject.AddComponent<QuadraticBezierCurve>();
@@ -199,7 +203,35 @@ public class RoadGeneratorBehaviour : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
+    {   
+        GameObject car = GameObject.Find("Car");
+        Vector3 pos = car.transform.position;
+
+        if (this._roadTiles.Count > 0) {
+            float dist = Vector3.Distance(this._roadTiles[0].transform.position, pos);
+            Debug.Log(dist);
+            if(dist >= 200) {
+                
+                // Delete env tiles
+                {
+                    foreach (var e in this._allEnv[0]) {
+                        GameObject.DestroyImmediate(e);
+                    }
+                    this._allEnv.RemoveAt(0);
+                }
+
+                GameObject.Destroy(this._roadTiles[0]);
+                this._roadTiles.RemoveAt(0);
+                this._directionHistory.RemoveAt(0);
+                this._allCurves[0]._mesh.Clear();
+                GameObject.Destroy(this._allCurves[0]);
+                this._allCurves.RemoveAt(0);
+
+                GenerateNextTile();
+                GenerateRoad(99);
+                GenerateEnv(2);
+            }
+        }
         // handle when whe leave a tile: we generate a new one        
     }
 }

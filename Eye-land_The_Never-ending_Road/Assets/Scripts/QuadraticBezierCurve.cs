@@ -13,7 +13,7 @@ public class QuadraticBezierCurve : MonoBehaviour {
 
     private MeshFilter _filter;
     private MeshRenderer _renderer;
-    private Mesh _mesh;
+    public Mesh _mesh;
 
     public Vector3[] _vertices;
     public Vector2[] _uv;
@@ -74,8 +74,9 @@ public class QuadraticBezierCurve : MonoBehaviour {
                 triangles[index + 5] = i * 2 - 1;
             }
         }
-      
+
         GameObject go = new GameObject();
+
         _filter = go.AddComponent<MeshFilter>();
         _renderer = go.AddComponent<MeshRenderer>();
         _mesh = new Mesh();
