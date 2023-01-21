@@ -14,6 +14,7 @@ public class RoadGeneratorBehaviour : MonoBehaviour
     public int _totalNumberOfTiles = 100;
     public Vector2 _tileDimension = new Vector2(30.0f, 30.0f);
     public float _tileThickness = 0.1f;
+    public float _maxHeightOfTile = 0.0f;
 
     public GameObject _tile;
     private List<GameObject> _roadTiles = new List<GameObject>();
@@ -111,7 +112,7 @@ public class RoadGeneratorBehaviour : MonoBehaviour
                 float g = (float)Random.Range(1, 100)/200;
                 float b = (float)Random.Range(1, 100)/100;
                 // height
-                float rand = (float)Random.Range(1, 200);
+                float rand = (float)Random.Range(1, this._maxHeightOfTile);
 
                 envPos.Add(new Vector3(x + offsetDirection * this._tileDimension.x * i, 0.5f + (this._tileThickness * rand) / 2, this._tile.transform.position.z));
                 // Handle nonOverlap between env tiles movement
@@ -243,7 +244,7 @@ public class RoadGeneratorBehaviour : MonoBehaviour
             float distLast = Math.Abs(this._roadTiles[this._roadTiles.Count - 1].transform.position.z - pos.z);
             float distFirst = Math.Abs(this._roadTiles[0].transform.position.z - pos.z);
             Debug.Log(distLast);
-            if(distLast < this._tileDimension.y * 5) {
+            if(distLast < this._tileDimension.y * 8) {
                 
                 if(distFirst > this._tileDimension.y * 5){
                     GameObject.Destroy(this._roadTiles[0]);
@@ -266,6 +267,9 @@ public class RoadGeneratorBehaviour : MonoBehaviour
                 GenerateNextTile();
                 GenerateRoad(this._allCurves.Count - 1);
                 GenerateEnv(2);
+
+                // Increase size of wall by the time
+                this._maxHeightOfTile += 3;
             }
 
 
@@ -279,7 +283,7 @@ public class RoadGeneratorBehaviour : MonoBehaviour
         for (int i = 0; i < this._allEnv.Count; i++)
         {
             float elapsedTime = currentTime - this._startTime[i];
-            float t = elapsedTime / this._randValueToSpawnEnv;
+            float t = elapsedTime / this._randValueToSpawnEnv / 2;
             //t = Mathf.Clamp01(t);
             for (int j = 0; j < this._allEnv[i].Count; j++)
             {   
