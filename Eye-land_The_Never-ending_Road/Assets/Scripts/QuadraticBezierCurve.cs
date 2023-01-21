@@ -47,7 +47,7 @@ public class QuadraticBezierCurve : MonoBehaviour {
     }
 
     // Processing Bezier formula for each t, then transform that into Mesh
-    public void GenerateBezierRoad() {
+    public GameObject GenerateBezierRoad() {
         Vector3[] vertices = new Vector3[_resolution * 2];
         Vector2[] uv = new Vector2[_resolution * 2];
         int[] triangles = new int[(_resolution - 1) * 6];
@@ -93,6 +93,8 @@ public class QuadraticBezierCurve : MonoBehaviour {
         //_renderer.material.color = Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
 
         _renderer.material.color = new Color(0.5f, 0.78f, 0.31f);
+
+        return go;
     }
 
     // EZ Debug with controls points

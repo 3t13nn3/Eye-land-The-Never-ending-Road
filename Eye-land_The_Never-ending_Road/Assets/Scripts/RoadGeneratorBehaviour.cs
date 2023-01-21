@@ -11,7 +11,7 @@ public class RoadGeneratorBehaviour : MonoBehaviour
     private enum Direction {
         SOUTH, WEST, NORTH, EAST
     }
-    
+    public int _totalNumberOfTiles = 100;
     public Vector2 _tileDimension = new Vector2(30.0f, 30.0f);
     public float _tileThickness = 0.1f;
 
@@ -20,7 +20,12 @@ public class RoadGeneratorBehaviour : MonoBehaviour
     private List<int> _directionHistory = new List<int>();
 
     private List<QuadraticBezierCurve> _allCurves = new List<QuadraticBezierCurve>();
+    private List<GameObject> _allCurvesGO = new List<GameObject>();
     public List<List<GameObject>> _allEnv = new List<List<GameObject>>();
+    public List<List<Vector3>> _allEnvPos = new List<List<Vector3>>();
+    public int _randValueToSpawnEnv = 60;
+
+    private List<float> _startTime = new List<float>();
 
     // Based on previous tile. Generate a new tile to append and continue the road
     private void GenerateNextTile() {
@@ -96,10 +101,10 @@ public class RoadGeneratorBehaviour : MonoBehaviour
         QuadraticBezierCurve c = gameObject.AddComponent<QuadraticBezierCurve>();
         c.SetPoints(points);
         this._allCurves.Add(c);
-        c.GenerateBezierRoad();
+        this._allCurvesGO.Add(c.GenerateBezierRoad());
     }
 
-    private void ProcessEnvTils(bool nonOverlap, float x, float z, int nbTiles, int offsetDirection, List<GameObject> envGO) {
+    private void ProcessEnvTils(bool nonOverlap, float x, float z, int nbTiles, int offsetDirection, List<GameObject> envGO, List<Vector3> envPos) {
         if(nonOverlap) {
             for (int i = 1; i < nbTiles; i++) {
                 float r = (float)Random.Range(1, 100)/100;
@@ -108,7 +113,15 @@ public class RoadGeneratorBehaviour : MonoBehaviour
                 // height
                 float rand = (float)Random.Range(1, 200);
 
-                this._tile.transform.position = new Vector3(x + offsetDirection * this._tileDimension.x * i, 0.5f + (this._tileThickness * rand) / 2, this._tile.transform.position.z);
+                envPos.Add(new Vector3(x + offsetDirection * this._tileDimension.x * i, 0.5f + (this._tileThickness * rand) / 2, this._tile.transform.position.z));
+                // Handle nonOverlap between env tiles movement
+                int xRand = Random.Range(i* ((offsetDirection * this._randValueToSpawnEnv)/nbTiles), (i+1)* ((offsetDirection * this._randValueToSpawnEnv)/nbTiles));
+                int yRand = Random.Range(-this._randValueToSpawnEnv, this._randValueToSpawnEnv);
+                this._tile.transform.position = new Vector3(
+                    (Math.Sign(xRand) * this._randValueToSpawnEnv / 2) + xRand + x + offsetDirection * this._tileDimension.x * i,
+                    (Math.Sign(yRand) * this._randValueToSpawnEnv) + yRand + 0.5f + (this._tileThickness * rand) / 2,
+                    this._tile.transform.position.z
+                );
                 this._tile.transform.localScale = new Vector3 (this._tileDimension.x, this._tileThickness * rand, this._tileDimension.y);
                 GameObject instance = Instantiate(this._tile);
                 instance.GetComponent<Renderer>().material.color = new Color(r, g, b);
@@ -117,7 +130,15 @@ public class RoadGeneratorBehaviour : MonoBehaviour
                 // Effet sympa
                 if (Random.Range(1, 5) == 1)
                 {
-                    this._tile.transform.position = new Vector3(x + offsetDirection * this._tileDimension.x * i, 0.5f + rand, this._tile.transform.position.z);
+                    // Handle nonOverlap between env tiles movement
+                    xRand = Random.Range(i* ((offsetDirection * this._randValueToSpawnEnv)/nbTiles), (i+1)* ((offsetDirection * this._randValueToSpawnEnv)/nbTiles));
+                    yRand = Random.Range(0, this._randValueToSpawnEnv);
+                    envPos.Add(new Vector3(x + offsetDirection * this._tileDimension.x * i, 0.5f + rand, this._tile.transform.position.z));
+                    this._tile.transform.position = new Vector3(
+                        (Math.Sign(xRand) * this._randValueToSpawnEnv / 2) + xRand + x + offsetDirection * this._tileDimension.x * i,
+                        this._randValueToSpawnEnv + yRand + 0.5f + rand,
+                        this._tile.transform.position.z
+                    );
                     GameObject instanceDecor = Instantiate(this._tile);
                     instanceDecor.GetComponent<Renderer>().material.color = new Color(r, g, b);
                     envGO.Add(instanceDecor);
@@ -130,25 +151,34 @@ public class RoadGeneratorBehaviour : MonoBehaviour
     void GenerateEnv(int nbTiles) {
         this._tile.transform.position = this._roadTiles[this._roadTiles.Count - nbTiles].transform.position;
 
-        for (int k = this._roadTiles.Count - nbTiles; k < this._directionHistory.Count() -1; k++) {
+        for (int k = this._roadTiles.Count - nbTiles; k < this._directionHistory.Count(); k++) {
             
             float x = this._tile.transform.position.x;
             float z = this._tile.transform.position.z;
 
             List<GameObject> envGO = new List<GameObject>();
-            bool nonOverlap = (k > 0 && k < this._directionHistory.Count() - 1 &&
+            List<Vector3> envPos = new List<Vector3>();
+            if(k == 0){
+                ProcessEnvTils(true, x, z, 10, 1, envGO, envPos);
+                ProcessEnvTils(true, x, z, 10, -1, envGO, envPos);    
+            } else {
+                bool nonOverlap = (k > 0 && k < this._directionHistory.Count() - 1 &&
                                 this._directionHistory[k] != (int)Direction.EAST &&
                                 this._directionHistory[k-1] != (int)Direction.WEST);
             
-            ProcessEnvTils(nonOverlap, x, z, 10, 1, envGO);
+                ProcessEnvTils(nonOverlap, x, z, 10, 1, envGO, envPos);
 
-            // width
-            nonOverlap = (k > 0 && k < this._directionHistory.Count() - 1 &&
-                            this._directionHistory[k] != (int)Direction.WEST &&
-                            this._directionHistory[k-1] != (int)Direction.EAST);
-            ProcessEnvTils(nonOverlap, x, z, 10, -1, envGO);                
+                // width
+                nonOverlap = (k > 0 && k < this._directionHistory.Count() - 1 &&
+                                this._directionHistory[k] != (int)Direction.WEST &&
+                                this._directionHistory[k-1] != (int)Direction.EAST);
+                ProcessEnvTils(nonOverlap, x, z, 10, -1, envGO, envPos);     
+            }
+                       
             
             this._allEnv.Add(envGO);
+            this._allEnvPos.Add(envPos);
+            this._startTime.Add(Time.time);
 
             if (this._directionHistory[k] == (int)Direction.WEST) {
                 x -= this._tileDimension.x;
@@ -164,7 +194,7 @@ public class RoadGeneratorBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {   
-        
+
         // First tile is always the same, straight
         {
             this._tile.transform.position = new Vector3(0f, 0.5f, 0f);
@@ -182,16 +212,17 @@ public class RoadGeneratorBehaviour : MonoBehaviour
                 }
             );
             this._allCurves.Add(c);
-            c.GenerateBezierRoad();
+            this._allCurvesGO.Add(c.GenerateBezierRoad());
         }
+        
 
-        for (int i = 1; i < 100; i++)
+        for (int i = 1; i < this._totalNumberOfTiles; i++)
         {
             GenerateNextTile();
             GenerateRoad(i);
         }
 
-        GenerateEnv(100);
+        GenerateEnv(this._totalNumberOfTiles);
         /*
         // Generating all the road as one object
         QuadraticBezierCurve ccc = gameObject.AddComponent<QuadraticBezierCurve>();
@@ -206,32 +237,55 @@ public class RoadGeneratorBehaviour : MonoBehaviour
     {   
         GameObject car = GameObject.Find("Car");
         Vector3 pos = car.transform.position;
-
+        //car.transform.position = new Vector3(car.transform.position.x, car.transform.position.y, car.transform.position.z + 0.3f);
         if (this._roadTiles.Count > 0) {
-            float dist = Vector3.Distance(this._roadTiles[0].transform.position, pos);
-            Debug.Log(dist);
-            if(dist >= 200) {
+            //float dist = Vector2.Distance(new Vector2(this._roadTiles[0].transform.position.x, this._roadTiles[0].transform.position.z), new Vector2(pos.x, pos.z));
+            float distLast = Math.Abs(this._roadTiles[this._roadTiles.Count - 1].transform.position.z - pos.z);
+            float distFirst = Math.Abs(this._roadTiles[0].transform.position.z - pos.z);
+            Debug.Log(distLast);
+            if(distLast < this._tileDimension.y * 5) {
                 
-                // Delete env tiles
-                {
+                if(distFirst > this._tileDimension.y * 5){
+                    GameObject.Destroy(this._roadTiles[0]);
+                    this._roadTiles.RemoveAt(0);
+                    this._directionHistory.RemoveAt(0);
+                    this._allCurves[0]._mesh.Clear();
+                    GameObject.Destroy(this._allCurvesGO[0]);
+                    GameObject.Destroy(this._allCurves[0]);
+                    this._allCurves.RemoveAt(0);
+                    this._allCurvesGO.RemoveAt(0);
+
                     foreach (var e in this._allEnv[0]) {
                         GameObject.DestroyImmediate(e);
                     }
                     this._allEnv.RemoveAt(0);
+                    this._allEnvPos.RemoveAt(0);
+                    this._startTime.RemoveAt(0);
+
                 }
-
-                GameObject.Destroy(this._roadTiles[0]);
-                this._roadTiles.RemoveAt(0);
-                this._directionHistory.RemoveAt(0);
-                this._allCurves[0]._mesh.Clear();
-                GameObject.Destroy(this._allCurves[0]);
-                this._allCurves.RemoveAt(0);
-
                 GenerateNextTile();
-                GenerateRoad(99);
+                GenerateRoad(this._allCurves.Count - 1);
                 GenerateEnv(2);
             }
+
+
         }
-        // handle when whe leave a tile: we generate a new one        
+        
+        
+        // handle when whe leave a tile: we generate a new one
+                
+        float currentTime = Time.time;
+
+        for (int i = 0; i < this._allEnv.Count; i++)
+        {
+            float elapsedTime = currentTime - this._startTime[i];
+            float t = elapsedTime / this._randValueToSpawnEnv;
+            //t = Mathf.Clamp01(t);
+            for (int j = 0; j < this._allEnv[i].Count; j++)
+            {   
+                this._allEnv[i][j].transform.position = Vector3.Lerp(this._allEnv[i][j].transform.position, this._allEnvPos[i][j], t);
+            }
+        }
+        
     }
 }
