@@ -13,7 +13,7 @@ public class CarMovingBehaviour : MonoBehaviour
     private float screenMiddleX = Screen.width / 2;
     private float screenMiddleY = Screen.height / 2;
 
-    private static float limitFactor = 0.04f;
+    private static float limitFactor = 0.15f;
     private float leftLimitX = Screen.width * limitFactor;
     private float rightLimitX = Screen.width * (1 - limitFactor);
     private float topLimitY = Screen.height * (1 - limitFactor);
@@ -44,7 +44,7 @@ public class CarMovingBehaviour : MonoBehaviour
             if (mousePosY >= bottomLimitY && mousePosY <= topLimitY)
                 new_speed = computeSpeed(mousePosY);
             else if (mousePosY < bottomLimitY)
-                new_speed = -maxSpeed;
+                new_speed = 0.0f;
             else if (mousePosY > topLimitY)
                 new_speed = maxSpeed;
 
