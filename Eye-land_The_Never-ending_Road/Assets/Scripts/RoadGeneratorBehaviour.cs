@@ -243,7 +243,7 @@ public class RoadGeneratorBehaviour : MonoBehaviour
             //float dist = Vector2.Distance(new Vector2(this._roadTiles[0].transform.position.x, this._roadTiles[0].transform.position.z), new Vector2(pos.x, pos.z));
             float distLast = Math.Abs(this._roadTiles[this._roadTiles.Count - 1].transform.position.z - pos.z);
             float distFirst = Math.Abs(this._roadTiles[0].transform.position.z - pos.z);
-            Debug.Log(distLast);
+            // Debug.Log(distLast);
             if(distLast < this._tileDimension.y * 8) {
                 
                 if(distFirst > this._tileDimension.y * 5){
