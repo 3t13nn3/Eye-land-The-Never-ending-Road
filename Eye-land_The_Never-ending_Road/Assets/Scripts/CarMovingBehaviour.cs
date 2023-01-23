@@ -37,8 +37,8 @@ public class CarMovingBehaviour : MonoBehaviour
             float new_speed = 0.0f;
             float turnAngle = 0.0f;
 
-            Debug.Log("mid X:" + screenMiddleX + ", mid Y :" + screenMiddleY  + ", left lim X :" + leftLimitX + ", right lim X :" + rightLimitX
-             + ", top lim Y :" + topLimitY + ", bot lim Y :" + bottomLimitY + ", pos X :" +mousePosX + ", pos Y :" + mousePosY);
+            // Debug.Log("mid X:" + screenMiddleX + ", mid Y :" + screenMiddleY  + ", left lim X :" + leftLimitX + ", right lim X :" + rightLimitX
+            //  + ", top lim Y :" + topLimitY + ", bot lim Y :" + bottomLimitY + ", pos X :" +mousePosX + ", pos Y :" + mousePosY);
 
             // Move forward
             if (mousePosY >= bottomLimitY && mousePosY <= topLimitY)
