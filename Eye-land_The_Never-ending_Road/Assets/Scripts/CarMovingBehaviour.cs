@@ -81,4 +81,12 @@ public class CarMovingBehaviour : MonoBehaviour
         else
             return maxAngle * (2 * (mousePosX - leftLimitX) / (rightLimitX - leftLimitX) - 1);
     }
-}
+
+    // marche pas
+    void OnCollisionEnter(Collision collision) {
+        if (collision.gameObject.name == "curve")
+        {
+            Debug.Log("IN THE ROAD");
+        }    
+    }
+ }

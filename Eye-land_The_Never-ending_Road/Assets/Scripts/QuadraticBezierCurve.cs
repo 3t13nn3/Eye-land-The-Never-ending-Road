@@ -94,6 +94,8 @@ public class QuadraticBezierCurve : MonoBehaviour {
 
         _renderer.material.color = new Color(0.5f, 0.78f, 0.31f);
 
+        go.name = "curve";
+        //go.tag = "curve";
         return go;
     }
 

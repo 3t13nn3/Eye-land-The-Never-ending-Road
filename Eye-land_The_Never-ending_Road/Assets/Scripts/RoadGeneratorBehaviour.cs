@@ -11,6 +11,9 @@ public class RoadGeneratorBehaviour : MonoBehaviour
     private enum Direction {
         SOUTH, WEST, NORTH, EAST
     }
+
+    public float _difficulty = 0.5f;
+
     public int _totalNumberOfTiles = 100;
     public Vector2 _tileDimension = new Vector2(30.0f, 30.0f);
     public float _tileThickness = 0.1f;
@@ -48,12 +51,28 @@ public class RoadGeneratorBehaviour : MonoBehaviour
 
         int nextDirection = 0;
         while(true) {
-            nextDirection = Random.Range(1, 4); 
+            nextDirection = Random.Range(1, 4);
             if (Math.Abs(nextDirection - this._directionHistory[this._directionHistory.Count - 1]) != (int)Direction.NORTH) {
                 // Debug.Log(direction);
                 break;
             }
         }
+
+        if(this._directionHistory[this._directionHistory.Count - 1] == nextDirection && Random.Range(0, 100) < this._difficulty * 100) {
+            if (nextDirection == (int)Direction.WEST || nextDirection == (int)Direction.EAST) {
+                nextDirection = (int)Direction.NORTH;
+            } else if (nextDirection == (int)Direction.NORTH) {
+                if(Random.Range(0, 2) == 1)
+                    nextDirection++;
+                else
+                    nextDirection--;
+            }
+        }
+
+        if(Random.Range(0, 100) > this._difficulty * 300) {
+            nextDirection = (int)Direction.NORTH;
+        }
+
         this._directionHistory.Add(nextDirection);
         this._tile.transform.position = new Vector3(xOffset, 0.5f, zOffset);
         this._tile.transform.localScale = new Vector3 (this._tileDimension.x, this._tileThickness, this._tileDimension.y);
@@ -67,21 +86,21 @@ public class RoadGeneratorBehaviour : MonoBehaviour
 
         GameObject currentTile = this._roadTiles[indexOfTile];
 
+        // Starting where the curve end
         points[0] = this._allCurves[this._allCurves.Count - 1]._points[3];
         
-
+        int direction = this._directionHistory[indexOfTile];
         for (int i = 1; i < 4; i++)
         {
             points[i] = new Vector3(
-                currentTile.transform.position.x + Random.Range(-(this._tileDimension.x/3), (this._tileDimension.x/3)),
+                currentTile.transform.position.x + Random.Range(-(this._difficulty*this._tileDimension.x/4), (this._difficulty*this._tileDimension.x/4)),
                 0.555f, 
-                currentTile.transform.position.z + Random.Range(-(this._tileDimension.y/3), (this._tileDimension.y/3))
+                currentTile.transform.position.z + Random.Range(-(this._difficulty*this._tileDimension.y/4), (this._difficulty*this._tileDimension.y/4))
             ); 
         }
 
-        // Not ending proprely
+        // Ending where the next start
         {
-            int direction = this._directionHistory[indexOfTile];
             if (direction == (int)Direction.WEST) {
                 points[3].x = this._roadTiles[indexOfTile].transform.position.x - this._tileDimension.x/2;
             } else if (direction == (int)Direction.NORTH) {
@@ -94,8 +113,8 @@ public class RoadGeneratorBehaviour : MonoBehaviour
         // From the article: Force first control point to be aligned with the last one
         Vector3 t = (this._allCurves[this._allCurves.Count - 1]._points[2] - points[0]);
         // Scaling to avoid exiting tiles
-        t.x /= 5;
-        t.z /= 5;
+        t.x /= 10*this._difficulty;
+        t.z /= 10*this._difficulty;
         // Then applying the transformation
         points[1] = points[0] - t;
 
@@ -112,7 +131,8 @@ public class RoadGeneratorBehaviour : MonoBehaviour
                 float g = (float)Random.Range(1, 100)/200;
                 float b = (float)Random.Range(1, 100)/100;
                 // height
-                float rand = (float)Random.Range(1, this._maxHeightOfTile);
+                double diff = Math.Pow(this._difficulty, 3f);
+                float rand = (float)Random.Range(1, (float)diff * 400f);
 
                 envPos.Add(new Vector3(x + offsetDirection * this._tileDimension.x * i, 0.5f + (this._tileThickness * rand) / 2, this._tile.transform.position.z));
                 // Handle nonOverlap between env tiles movement
@@ -238,7 +258,7 @@ public class RoadGeneratorBehaviour : MonoBehaviour
     {   
         GameObject car = GameObject.Find("Car");
         Vector3 pos = car.transform.position;
-        //car.transform.position = new Vector3(car.transform.position.x, car.transform.position.y, car.transform.position.z + 0.3f);
+        // car.transform.position = new Vector3(car.transform.position.x, car.transform.position.y, car.transform.position.z + 5f);
         if (this._roadTiles.Count > 0) {
             //float dist = Vector2.Distance(new Vector2(this._roadTiles[0].transform.position.x, this._roadTiles[0].transform.position.z), new Vector2(pos.x, pos.z));
             float distLast = Math.Abs(this._roadTiles[this._roadTiles.Count - 1].transform.position.z - pos.z);
@@ -269,7 +289,7 @@ public class RoadGeneratorBehaviour : MonoBehaviour
                 GenerateEnv(2);
 
                 // Increase size of wall by the time
-                this._maxHeightOfTile += 3;
+                // this._maxHeightOfTile += 3;
             }
 
 
