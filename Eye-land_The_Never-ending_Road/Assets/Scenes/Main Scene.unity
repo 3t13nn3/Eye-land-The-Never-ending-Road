@@ -152,9 +152,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32fb49d8f909ee343a2ba29dc2055762, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _difficulty: 0.3
-  _totalNumberOfTiles: 15
-  _tileDimension: {x: 30, y: 30}
+  _difficulty: 0
+  _totalNumberOfTiles: 10
+  _tileDimension: {x: 50, y: 50}
   _tileThickness: 0.1
   _maxHeightOfTile: 1
   _tile: {fileID: 6376110294782052347, guid: 7810371ff18a8dc4ab48d1104295638f, type: 3}

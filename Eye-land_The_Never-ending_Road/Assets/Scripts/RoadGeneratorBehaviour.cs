@@ -73,6 +73,14 @@ public class RoadGeneratorBehaviour : MonoBehaviour
             nextDirection = (int)Direction.NORTH;
         }
 
+        // If there is a direction change, let a space for a wall but not always (1/2 chances)
+        if(this._directionHistory.Count() > 1
+            && this._directionHistory[this._directionHistory.Count - 1] != nextDirection
+            && this._directionHistory[this._directionHistory.Count - 2] != this._directionHistory[this._directionHistory.Count - 1]
+            && Random.Range(0, 2) == 1) {
+                nextDirection = this._directionHistory[this._directionHistory.Count - 1];
+        }
+
         this._directionHistory.Add(nextDirection);
         this._tile.transform.position = new Vector3(xOffset, 0.5f, zOffset);
         this._tile.transform.localScale = new Vector3 (this._tileDimension.x, this._tileThickness, this._tileDimension.y);
@@ -93,9 +101,9 @@ public class RoadGeneratorBehaviour : MonoBehaviour
         for (int i = 1; i < 4; i++)
         {
             points[i] = new Vector3(
-                currentTile.transform.position.x + Random.Range(-(this._difficulty*this._tileDimension.x/4), (this._difficulty*this._tileDimension.x/4)),
+                currentTile.transform.position.x + Random.Range(-((this._difficulty*this._tileDimension.x)/3), ((this._difficulty*this._tileDimension.x)/3)),
                 0.555f, 
-                currentTile.transform.position.z + Random.Range(-(this._difficulty*this._tileDimension.y/4), (this._difficulty*this._tileDimension.y/4))
+                currentTile.transform.position.z + Random.Range(-((this._difficulty*this._tileDimension.y)/3), ((this._difficulty*this._tileDimension.y)/3))
             ); 
         }
 
@@ -113,15 +121,15 @@ public class RoadGeneratorBehaviour : MonoBehaviour
         // From the article: Force first control point to be aligned with the last one
         Vector3 t = (this._allCurves[this._allCurves.Count - 1]._points[2] - points[0]);
         // Scaling to avoid exiting tiles
-        t.x /= 10*this._difficulty;
-        t.z /= 10*this._difficulty;
+        t.x *= (this._difficulty * 1.2f);
+        t.z *= (this._difficulty * 1.2f);
         // Then applying the transformation
         points[1] = points[0] - t;
 
         QuadraticBezierCurve c = gameObject.AddComponent<QuadraticBezierCurve>();
         c.SetPoints(points);
         this._allCurves.Add(c);
-        this._allCurvesGO.Add(c.GenerateBezierRoad());
+        this._allCurvesGO.Add(c.GenerateBezierRoad(this._difficulty));
     }
 
     private void ProcessEnvTils(bool nonOverlap, float x, float z, int nbTiles, int offsetDirection, List<GameObject> envGO, List<Vector3> envPos) {
@@ -183,14 +191,14 @@ public class RoadGeneratorBehaviour : MonoBehaviour
                 ProcessEnvTils(true, x, z, 10, 1, envGO, envPos);
                 ProcessEnvTils(true, x, z, 10, -1, envGO, envPos);    
             } else {
-                bool nonOverlap = (k > 0 && k < this._directionHistory.Count() - 1 &&
+                bool nonOverlap = (k > 0 && k < this._directionHistory.Count() &&
                                 this._directionHistory[k] != (int)Direction.EAST &&
                                 this._directionHistory[k-1] != (int)Direction.WEST);
             
                 ProcessEnvTils(nonOverlap, x, z, 10, 1, envGO, envPos);
 
                 // width
-                nonOverlap = (k > 0 && k < this._directionHistory.Count() - 1 &&
+                nonOverlap = (k > 0 && k < this._directionHistory.Count() &&
                                 this._directionHistory[k] != (int)Direction.WEST &&
                                 this._directionHistory[k-1] != (int)Direction.EAST);
                 ProcessEnvTils(nonOverlap, x, z, 10, -1, envGO, envPos);     
@@ -215,7 +223,6 @@ public class RoadGeneratorBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {   
-
         // First tile is always the same, straight
         {
             this._tile.transform.position = new Vector3(0f, 0.5f, 0f);
@@ -233,7 +240,7 @@ public class RoadGeneratorBehaviour : MonoBehaviour
                 }
             );
             this._allCurves.Add(c);
-            this._allCurvesGO.Add(c.GenerateBezierRoad());
+            this._allCurvesGO.Add(c.GenerateBezierRoad(this._difficulty));
         }
         
 
@@ -256,9 +263,10 @@ public class RoadGeneratorBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {   
+        
         GameObject car = GameObject.Find("Car");
         Vector3 pos = car.transform.position;
-        // car.transform.position = new Vector3(car.transform.position.x, car.transform.position.y, car.transform.position.z + 5f);
+        //car.transform.position = new Vector3(car.transform.position.x, car.transform.position.y, car.transform.position.z + 10f);
         if (this._roadTiles.Count > 0) {
             //float dist = Vector2.Distance(new Vector2(this._roadTiles[0].transform.position.x, this._roadTiles[0].transform.position.z), new Vector2(pos.x, pos.z));
             float distLast = Math.Abs(this._roadTiles[this._roadTiles.Count - 1].transform.position.z - pos.z);
@@ -286,10 +294,8 @@ public class RoadGeneratorBehaviour : MonoBehaviour
                 }
                 GenerateNextTile();
                 GenerateRoad(this._allCurves.Count - 1);
-                GenerateEnv(2);
-
-                // Increase size of wall by the time
-                // this._maxHeightOfTile += 3;
+                GenerateEnv(1);
+                //this._difficulty += 0.01f;
             }
 
 
