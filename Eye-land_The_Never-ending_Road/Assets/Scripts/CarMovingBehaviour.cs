@@ -4,9 +4,7 @@ using UnityEngine;
 
 public class CarMovingBehaviour : MonoBehaviour
 {
-    private int _onRoad = 0;
-
-    private int _offRoad = 0;
+    private int _meanTime = 20;
 
     private float _totalTime = 0;
 
@@ -44,7 +42,6 @@ public class CarMovingBehaviour : MonoBehaviour
     {
         StartCoroutine(CalculateOnOffRoadRatio());
         Debug.Log("The on-road ratio is: " + this._onRoadRatio);
-
         // move the car when mouse pressed
         if (Input.GetMouseButton(0))
         {
@@ -109,31 +106,39 @@ public class CarMovingBehaviour : MonoBehaviour
 
     private bool IsOnRoad()
     {
-        GameObject[] roadObjects = GameObject.FindGameObjectsWithTag("curve");
+        GameObject[] roadObjects = GameObject.FindGameObjectsWithTag("sphere");
         Collider vehicleCollider = gameObject.GetComponent<Collider>();
 
-        foreach (GameObject roadObject in roadObjects)
-        {
-            Collider roadCollider = roadObject.GetComponent<MeshCollider>();
-            if (vehicleCollider.bounds.Intersects(roadCollider.bounds))
-            {
-                return true;
+        foreach (GameObject roadObject in roadObjects) {
+            SphereCollider [] roadColliders = roadObject.GetComponents<SphereCollider>();
+            foreach (SphereCollider roadCollider in roadColliders) {
+                //Debug.Log(roadCollider);
+                if (vehicleCollider.bounds.Intersects(roadCollider.bounds)) {
+                    return true;
+                }
             }
         }
 
-        return false;
+            return false;
     }
 
     private IEnumerator CalculateOnOffRoadRatio()
     {
         this._totalTime += Time.deltaTime;
 
-        if (IsOnRoad())
-        {
+        if (IsOnRoad()) {
             this._onRoadTime += Time.deltaTime;
+            Debug.Log("IN THE ROAD");
+        } else {
+            Debug.Log("OUTTTT THE ROAD");
+        }
+
+        if (this._totalTime >= _meanTime) {
+            this._totalTime -= _meanTime;
+            this._onRoadTime -= this._onRoadRatio * _meanTime;
         }
 
         this._onRoadRatio = this._onRoadTime / this._totalTime;
-        yield return new WaitForSeconds(0.25f);
+        yield return new WaitForEndOfFrame();
     }
 }
