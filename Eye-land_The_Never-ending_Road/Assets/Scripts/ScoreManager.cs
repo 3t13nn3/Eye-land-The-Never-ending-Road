@@ -6,7 +6,7 @@ using TMPro;
 public class ScoreManager : MonoBehaviour
 {
     public float fadeDuration = 1.0f;
-    GameObject car;
+    public GameObject car;
     public TextMeshProUGUI scoreTMP;
     private int score;
 
