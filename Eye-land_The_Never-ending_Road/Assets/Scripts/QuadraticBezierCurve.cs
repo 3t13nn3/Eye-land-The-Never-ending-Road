@@ -7,9 +7,8 @@ public class QuadraticBezierCurve : MonoBehaviour {
 
     public Vector3[] _points = new Vector3[4];
     
-    public float _width = 10;
+    public float _width = 10.5f;
     public int _resolution = 50;
-    public float _thickness = 10;
 
     private MeshFilter _filter;
     private MeshRenderer _renderer;
@@ -79,6 +78,7 @@ public class QuadraticBezierCurve : MonoBehaviour {
 
         _filter = go.AddComponent<MeshFilter>();
         _renderer = go.AddComponent<MeshRenderer>();
+        
         _mesh = new Mesh();
         _filter.mesh = _mesh;
 
@@ -87,21 +87,18 @@ public class QuadraticBezierCurve : MonoBehaviour {
         _mesh.vertices = vertices;
         _mesh.uv = uv;
         _mesh.triangles = triangles;
+        _mesh.RecalculateNormals();
 
         _vertices = vertices;
         _uv = uv;
         _triangles = triangles;
 
         //_renderer.material.color = Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
-
-        _renderer.material.color = new Color(_difficulty, (1f - _difficulty), 0.1f);
-
-        // go.AddComponent<Rigidbody>();
-        // go.GetComponent<Rigidbody>().isKinematic = true;
+        _renderer.material = new Material(Shader.Find("Standard"));
+        _renderer.material.color = new Color(_difficulty / 2f, (1f/3f - _difficulty / 3f), 0.05f);
+        
 
         MeshCollider meshCollider = go.gameObject.AddComponent<MeshCollider>();
-        // meshCollider.convex = true;
-        //meshCollider.isTrigger = true;
 
         go.name = "curve";
         go.tag = "curve";

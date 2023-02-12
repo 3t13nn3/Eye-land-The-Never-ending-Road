@@ -20,6 +20,14 @@ public class RoadGeneratorBehaviour : MonoBehaviour
     public float _tileThickness = 0.1f;
 
     public GameObject _tile;
+    public GameObject _tree;
+    public GameObject _bread;
+    private List<GameObject> _allTrees = new List<GameObject>();
+
+       private List<Vector3> _allTreesRot = new List<Vector3>();
+    private List<GameObject> _allBreads = new List<GameObject>();
+    private List<Vector3> _allBreadsPos = new List<Vector3>();
+    private List<Vector3> _allBreadsRot = new List<Vector3>();
     private List<GameObject> _roadTiles = new List<GameObject>();
     private List<int> _directionHistory = new List<int>();
 
@@ -141,8 +149,8 @@ public class RoadGeneratorBehaviour : MonoBehaviour
         // From the article: Force first control point to be aligned with the last one
         Vector3 t = (this._allCurves[this._allCurves.Count - 1]._points[2] - points[0]);
         // Scaling to avoid exiting tiles
-        t.x *= (this._difficulty * 1.2f);
-        t.z *= (this._difficulty * 1.2f);
+        t.x *= (this._difficulty * 1.15f);
+        t.z *= (this._difficulty * 1.15f);
         // Then applying the transformation
         points[1] = points[0] - t;
 
@@ -253,6 +261,135 @@ public class RoadGeneratorBehaviour : MonoBehaviour
         }
     }
 
+    // Need to process this after the road is created
+    void GeneratingTree() {
+        
+        float randomNumber = Random.value;
+        if (randomNumber < this._difficulty) {
+            Vector3 currentTile = this._allCurves[this._allCurves.Count - 1]._points[2];
+
+            for (int i = 0; i < 2; i++)
+            {
+                
+                this._tree.transform.position = new Vector3(
+                    Random.Range(currentTile.x - (this._tileDimension.x / 1.8f), currentTile.x + (this._tileDimension.x / 1.8f)),
+                    0f,
+                    Random.Range(currentTile.z - (this._tileDimension.y / 1.8f), currentTile.z + (this._tileDimension.y / 1.8f))
+                );
+
+                // thick
+                float thick = Random.Range(0.8f, 3f);
+                float height = Random.Range(0.8f, 3f);
+                this._tree.transform.localScale = new Vector3(thick, height, thick);
+                this._tree.transform.eulerAngles = new Vector3(0f, Random.Range(0f, 360f), 0f);
+                GameObject instance = Instantiate(this._tree);
+                this._allTrees.Add(instance);
+
+                Vector3 rot = new Vector3(0f, Random.Range(-0.5f, 0.5f), 0f);
+                this._allTreesRot.Add(rot);
+            }
+        }
+    }
+
+    void TreesAnimation() {
+        for (int i = 0; i < this._allTrees.Count; ++i)
+        {
+            this._allTrees[i].transform.eulerAngles += this._allTreesRot[i];
+        }
+    }
+
+    void GeneratingBread() {
+        
+        float randomNumber = Random.value;
+        if (randomNumber < this._difficulty/2f && this._difficulty >= 0.5f) {
+            GameObject car = GameObject.Find("Car");
+            Vector3 currentTile = car.transform.position;
+
+            float xDirection = Random.Range(10, 0) > 5 ? 1 : -1;
+
+            this._bread.transform.position = new Vector3(
+                currentTile.x + (this._tileDimension.x * xDirection) * 1.5f,
+                6f,
+                currentTile.z + (this._tileDimension.y) * 1.75f
+            );
+
+            // thick
+            float thick = Random.Range(0.8f, 1.5f);
+            float height = Random.Range(0.8f, 1.5f);
+            this._bread.transform.localScale = new Vector3(thick, height, thick);
+            this._bread.transform.eulerAngles = new Vector3(0f, 0f, 0f);
+            
+            
+            Vector3 pos = new Vector3(Random.Range(0.1f, 0.01f), 0f, Random.Range(0.01f, 0.08f));
+            if (xDirection == 1)
+                pos.x *= -1;
+
+
+            // if (car.transform.localRotation.eulerAngles.y < -60f || car.transform.localRotation.eulerAngles.y > 60f) {
+            //     pos = new Vector3(pos.z, pos.y, pos.x);
+            //     // if (car.transform.localRotation.eulerAngles.y < -60f) {
+            //     //     this._bread.transform.position = new Vector3(this._bread.transform.position.x - 2f* (this._tileDimension.x * xDirection), this._bread.transform.position.y, this._bread.transform.position.z);
+            //     // }
+            //     //this._bread.transform.position = new Vector3(this._bread.transform.position.x - (this._tileDimension.x * xDirection * 2f), this._bread.transform.position.y, this._bread.transform.position.z  + (this._tileDimension.y * zDirection * 2f));
+            // }
+        
+            Vector3 rot = new Vector3(0f, Random.Range(-1.5f, 1.5f), Random.Range(-1.5f, 1.5f));
+
+            GameObject instance = Instantiate(this._bread);
+            this._allBreadsPos.Add(pos);
+            this._allBreadsRot.Add(rot);
+            this._allBreads.Add(instance);
+        }
+    }
+
+    void DeleteDisturb(Vector3 pos) {
+        if(this._allTrees.Count > 0) {
+            int treeCpt = 0;
+            for (int i = 0; i < this._allTrees.Count; i++)
+            {
+                float distTree = Math.Abs(this._allTrees[i].transform.position.z - pos.z);
+                if (distTree > this._tileDimension.y * 5 && this._allTrees[i].transform.position.z < pos.z) {
+                    GameObject.Destroy(this._allTrees[i]);
+                    ++treeCpt;
+                } else {
+                    break;
+                }
+            }
+            for (int i = 0; i < treeCpt; i++)
+            {
+                this._allTrees.RemoveAt(0);
+                this._allTreesRot.RemoveAt(0);
+            }
+        }
+
+        if(this._allBreads.Count > 0) {
+            int breadsCpt = 0;
+            for (int i = 0; i < this._allBreads.Count; i++)
+            {
+                float distbreads = Math.Abs(this._allBreads[i].transform.position.z - pos.z);
+                if (distbreads > this._tileDimension.y * 10) {
+                    GameObject.Destroy(this._allBreads[i]);
+                    ++breadsCpt;
+                } else {
+                    break;
+                }
+            }
+            for (int i = 0; i < breadsCpt; i++)
+            {
+                this._allBreads.RemoveAt(0);
+                this._allBreadsRot.RemoveAt(0);
+                this._allBreadsPos.RemoveAt(0);
+            }
+        }
+    }
+
+    void BreadsAnimation () {
+        for (int i = 0; i < this._allBreads.Count; ++i)
+        {
+            this._allBreads[i].transform.position += this._allBreadsPos[i];
+            this._allBreads[i].transform.eulerAngles += this._allBreadsRot[i];
+        }
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -281,6 +418,8 @@ public class RoadGeneratorBehaviour : MonoBehaviour
         {
             GenerateNextTile();
             GenerateRoad(i);
+            GeneratingTree();
+            //GeneratingBread();
         }
 
         GenerateEnv(this._totalNumberOfTiles);
@@ -327,14 +466,20 @@ public class RoadGeneratorBehaviour : MonoBehaviour
                     this._allEnv.RemoveAt(0);
                     this._allEnvPos.RemoveAt(0);
                     this._startTime.RemoveAt(0);
-
                 }
-                GenerateNextTile();
-                GenerateRoad(this._allCurves.Count - 1);
-                GenerateEnv(1);
-                //this._difficulty += 0.01f;
-            }
 
+                DeleteDisturb(pos);
+
+                GenerateNextTile();
+                GenerateRoad(this._allCurves.Count);
+                GenerateEnv(1);
+                GeneratingTree();
+                GeneratingBread();
+                this._difficulty += 0.04f;
+                if(this._difficulty > 1f) this._difficulty = 1f;
+            }
+            BreadsAnimation();
+            TreesAnimation();
 
         }
 
