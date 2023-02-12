@@ -439,7 +439,7 @@ public class RoadGeneratorBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(GetPlayerDistance());
+        //Debug.Log(GetPlayerDistance());
         GameObject car = GameObject.Find("Car");
         Vector3 pos = car.transform.position;
         //car.transform.position = new Vector3(car.transform.position.x, car.transform.position.y, car.transform.position.z + 10f);
