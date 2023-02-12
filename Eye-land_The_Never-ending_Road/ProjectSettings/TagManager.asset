@@ -5,7 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - curve
-  - sphere
+  - box
   layers:
   - Default
   - TransparentFX
