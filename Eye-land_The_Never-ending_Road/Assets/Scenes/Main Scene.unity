@@ -152,13 +152,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32fb49d8f909ee343a2ba29dc2055762, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _difficulty: 0.3
-  _totalNumberOfTiles: 15
-  _tileDimension: {x: 30, y: 30}
+  _difficulty: 0.5
+  _totalNumberOfTiles: 10
+  _tileDimension: {x: 40, y: 40}
   _tileThickness: 0.1
-  _maxHeightOfTile: 1
   _tile: {fileID: 6376110294782052347, guid: 7810371ff18a8dc4ab48d1104295638f, type: 3}
-  _randValueToSpawnEnv: 100
+  _tree: {fileID: 1637808699105738692, guid: 45553dc49c9d3a5468bb006d66391f92, type: 3}
+  _bread: {fileID: 3171015828131756868, guid: e119562683365b341895468816452671, type: 3}
+  _randValueToSpawnEnv: 140
 --- !u!4 &28023491
 Transform:
   m_ObjectHideFlags: 0
@@ -763,8 +764,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3bbfbf88a4e94ed2bd3938a980385a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 12
-  sensitivity: 10
+  _sensitivity: 10
 --- !u!114 &1727319304
 MonoBehaviour:
   m_ObjectHideFlags: 0
