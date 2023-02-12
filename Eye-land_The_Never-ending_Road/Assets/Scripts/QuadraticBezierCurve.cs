@@ -101,22 +101,27 @@ public class QuadraticBezierCurve : MonoBehaviour {
         // MeshCollider meshCollider = go.AddComponent<MeshCollider>();
         // meshCollider.sharedMesh = _mesh;
         // meshCollider.convex = false;
-        for (int i = 0; i < triangles.Length; i += 3)
-        {
-            Vector3 center = (vertices[triangles[i]] + vertices[triangles[i + 1]] + vertices[triangles[i + 2]]) / 3;
-            float radius = Vector3.Distance(center, vertices[triangles[i]]);
+        int offset = 30;
+        for (int j = 0; j < triangles.Length; j += offset){
+            for (int i = j; i < j + 6; i += 3)
+            {
+                Vector3 center = (vertices[triangles[i]] + vertices[triangles[i + 1]] + vertices[triangles[i + 2]]) / 3;
+                float maxDimension = Mathf.Max(Vector3.Distance(center, vertices[triangles[i]]),
+                    Vector3.Distance(center, vertices[triangles[i + 1]]),
+                    Vector3.Distance(center, vertices[triangles[i + 2]]));
 
-            GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            sphere.transform.position = center; 
-            sphere.transform.localScale = new Vector3(radius * 1.5f, radius * 1.5f, radius * 1.5f);
-            sphere.AddComponent<SphereCollider>();
-            sphere.GetComponent<Renderer>().enabled = false;
-            //sphere.GetComponent<SphereCollider>().isTrigger = false;
-            sphere.AddComponent<Rigidbody>();
-            sphere.GetComponent<Rigidbody>().isKinematic = true;
-            sphere.GetComponent<Rigidbody>().detectCollisions = false;
-            sphere.transform.parent = go.transform;
-            sphere.tag = "sphere";
+                GameObject box = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                box.transform.position = center;
+                box.transform.localScale = new Vector3(maxDimension * 0.8f, maxDimension * 0.8f, maxDimension * 0.8f);
+                box.AddComponent<BoxCollider>();
+                box.GetComponent<Renderer>().enabled = false;
+                //box.GetComponent<BoxCollider>().isTrigger = false;
+                box.AddComponent<Rigidbody>();
+                box.GetComponent<Rigidbody>().isKinematic = true;
+                box.GetComponent<Rigidbody>().detectCollisions = false;
+                box.transform.parent = go.transform;
+                box.tag = "box";
+            }
         }
         
         go.name = "curve";

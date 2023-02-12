@@ -44,7 +44,7 @@ public class CarMovingBehaviour : MonoBehaviour
     void Update()
     {
         StartCoroutine(CalculateOnOffRoadRatio());
-        Debug.Log("The on-road ratio is: " + this._onRoadRatio);
+        //Debug.Log("The on-road ratio is: " + this._onRoadRatio);
         // move the car when mouse pressed
         if (Input.GetMouseButton(0))
         {
@@ -112,12 +112,12 @@ public class CarMovingBehaviour : MonoBehaviour
 
     private bool IsOnRoad()
     {
-        GameObject[] roadObjects = GameObject.FindGameObjectsWithTag("sphere");
+        GameObject[] roadObjects = GameObject.FindGameObjectsWithTag("box");
         Collider vehicleCollider = gameObject.GetComponent<Collider>();
 
         foreach (GameObject roadObject in roadObjects) {
-            SphereCollider [] roadColliders = roadObject.GetComponents<SphereCollider>();
-            foreach (SphereCollider roadCollider in roadColliders) {
+            BoxCollider [] roadColliders = roadObject.GetComponents<BoxCollider>();
+            foreach (BoxCollider roadCollider in roadColliders) {
                 //Debug.Log(roadCollider);
                 if (vehicleCollider.bounds.Intersects(roadCollider.bounds)) {
                     return true;
