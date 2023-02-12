@@ -8,7 +8,7 @@ public class ScoreManager : MonoBehaviour
     public float fadeDuration = 1.0f;
     public GameObject car;
     public TextMeshProUGUI scoreTMP;
-    private int score;
+    public static int score;
 
 
     // Start is called before the first frame update

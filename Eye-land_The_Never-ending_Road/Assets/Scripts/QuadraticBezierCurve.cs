@@ -82,7 +82,7 @@ public class QuadraticBezierCurve : MonoBehaviour {
         _mesh = new Mesh();
         _filter.mesh = _mesh;
 
-        _filter.gameObject.AddComponent<CapsuleCollider>();
+        //_filter.gameObject.AddComponent<CapsuleCollider>();
 
         _mesh.vertices = vertices;
         _mesh.uv = uv;
@@ -97,9 +97,33 @@ public class QuadraticBezierCurve : MonoBehaviour {
         _renderer.material = new Material(Shader.Find("Standard"));
         _renderer.material.color = new Color(_difficulty / 2f, (1f/3f - _difficulty / 3f), 0.05f);
         
+        //MeshCollider meshCollider = go.gameObject.AddComponent<MeshCollider>();
+        // MeshCollider meshCollider = go.AddComponent<MeshCollider>();
+        // meshCollider.sharedMesh = _mesh;
+        // meshCollider.convex = false;
+        int offset = 30;
+        for (int j = 0; j < triangles.Length; j += offset){
+            for (int i = j; i < j + 6; i += 3)
+            {
+                Vector3 center = (vertices[triangles[i]] + vertices[triangles[i + 1]] + vertices[triangles[i + 2]]) / 3;
+                float maxDimension = Mathf.Max(Vector3.Distance(center, vertices[triangles[i]]),
+                    Vector3.Distance(center, vertices[triangles[i + 1]]),
+                    Vector3.Distance(center, vertices[triangles[i + 2]]));
 
-        MeshCollider meshCollider = go.gameObject.AddComponent<MeshCollider>();
-
+                GameObject box = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                box.transform.position = center;
+                box.transform.localScale = new Vector3(maxDimension * 0.8f, maxDimension * 0.8f, maxDimension * 0.8f);
+                box.AddComponent<BoxCollider>();
+                box.GetComponent<Renderer>().enabled = false;
+                //box.GetComponent<BoxCollider>().isTrigger = false;
+                box.AddComponent<Rigidbody>();
+                box.GetComponent<Rigidbody>().isKinematic = true;
+                box.GetComponent<Rigidbody>().detectCollisions = false;
+                box.transform.parent = go.transform;
+                box.tag = "box";
+            }
+        }
+        
         go.name = "curve";
         go.tag = "curve";
 
@@ -107,76 +131,76 @@ public class QuadraticBezierCurve : MonoBehaviour {
     }
 
     // EZ Debug with controls points
-    public void OnDrawGizmos() {
+    // public void OnDrawGizmos() {
         
-        for (int i = 0; i < this._points.Length; i++) {
-            Gizmos.color = Color.yellow;
-            if (i == 1 ||i == 2) {
-                Gizmos.color = Color.red;
-            }
-            Gizmos.DrawSphere(this._points[i], _width/5);
-        }
+    //     for (int i = 0; i < this._points.Length; i++) {
+    //         Gizmos.color = Color.yellow;
+    //         if (i == 1 ||i == 2) {
+    //             Gizmos.color = Color.red;
+    //         }
+    //         Gizmos.DrawSphere(this._points[i], _width/5);
+    //     }
 
-        for (int i = 0; i < this._points.Length - 1; i++) {
-            Vector3 start = this._points[i];
-            Vector3 end = this._points[i + 1];
-            Vector3 startTangent = start + Vector3.right * 0.5f;
-            Vector3 endTangent = end + Vector3.left * 0.5f;
-            Gizmos.DrawLine(start, startTangent);
-            Gizmos.DrawLine(end, endTangent);
-            for (float t = 0; t <= 1; t += 0.1f) {
-                Vector3 point = CalculateBezierPoint(start, startTangent, endTangent, end, t);
-                Gizmos.DrawSphere(point, 0.02f);
-            }
-        }
-    }
+    //     for (int i = 0; i < this._points.Length - 1; i++) {
+    //         Vector3 start = this._points[i];
+    //         Vector3 end = this._points[i + 1];
+    //         Vector3 startTangent = start + Vector3.right * 0.5f;
+    //         Vector3 endTangent = end + Vector3.left * 0.5f;
+    //         Gizmos.DrawLine(start, startTangent);
+    //         Gizmos.DrawLine(end, endTangent);
+    //         for (float t = 0; t <= 1; t += 0.1f) {
+    //             Vector3 point = CalculateBezierPoint(start, startTangent, endTangent, end, t);
+    //             Gizmos.DrawSphere(point, 0.02f);
+    //         }
+    //     }
+    // }
 
 
 
     // Ca marche, mais ici je veux rendre une unique courbe de bezier quadratique qui se suit ! Pas rendre un objet de toutes les courbes. Le but seraitd'avoir une seule courbe lisse, sans espace entre les courbes.
-    public void MergeAllCurves(List<QuadraticBezierCurve> _allCurves) {
-        List<Vector3> verticesList = new List<Vector3>();
-        List<Vector2> uvList = new List<Vector2>();
-        List<int> trianglesList = new List<int>();
+//     public void MergeAllCurves(List<QuadraticBezierCurve> _allCurves) {
+//         List<Vector3> verticesList = new List<Vector3>();
+//         List<Vector2> uvList = new List<Vector2>();
+//         List<int> trianglesList = new List<int>();
 
-        int currentIndex = 0;
-        for(int i = 0; i < _allCurves.Count; i++) {
-            QuadraticBezierCurve currentCurve = _allCurves[i];
-            for(int j = 0; j < currentCurve._resolution; j++) {
-                verticesList.Add(currentCurve._vertices[j * 2]);
-                verticesList.Add(currentCurve._vertices[j * 2 + 1]);
-                uvList.Add(currentCurve._uv[j * 2]);
-                uvList.Add(currentCurve._uv[j * 2 + 1]);
+//         int currentIndex = 0;
+//         for(int i = 0; i < _allCurves.Count; i++) {
+//             QuadraticBezierCurve currentCurve = _allCurves[i];
+//             for(int j = 0; j < currentCurve._resolution; j++) {
+//                 verticesList.Add(currentCurve._vertices[j * 2]);
+//                 verticesList.Add(currentCurve._vertices[j * 2 + 1]);
+//                 uvList.Add(currentCurve._uv[j * 2]);
+//                 uvList.Add(currentCurve._uv[j * 2 + 1]);
 
-                if(j > 0) {
-                    int currentTriangleIndex = (j - 1) * 6;
-                    int[] currentTriangles = currentCurve._triangles;
-                    trianglesList.Add(currentTriangles[currentTriangleIndex] + currentIndex);
-                    trianglesList.Add(currentTriangles[currentTriangleIndex + 1] + currentIndex);
-                    trianglesList.Add(currentTriangles[currentTriangleIndex + 2] + currentIndex);
-                    trianglesList.Add(currentTriangles[currentTriangleIndex + 3] + currentIndex);
-                    trianglesList.Add(currentTriangles[currentTriangleIndex + 4] + currentIndex);
-                    trianglesList.Add(currentTriangles[currentTriangleIndex + 5] + currentIndex);
-                }
-            }
-            currentIndex += currentCurve._resolution * 2;
-        }
+//                 if(j > 0) {
+//                     int currentTriangleIndex = (j - 1) * 6;
+//                     int[] currentTriangles = currentCurve._triangles;
+//                     trianglesList.Add(currentTriangles[currentTriangleIndex] + currentIndex);
+//                     trianglesList.Add(currentTriangles[currentTriangleIndex + 1] + currentIndex);
+//                     trianglesList.Add(currentTriangles[currentTriangleIndex + 2] + currentIndex);
+//                     trianglesList.Add(currentTriangles[currentTriangleIndex + 3] + currentIndex);
+//                     trianglesList.Add(currentTriangles[currentTriangleIndex + 4] + currentIndex);
+//                     trianglesList.Add(currentTriangles[currentTriangleIndex + 5] + currentIndex);
+//                 }
+//             }
+//             currentIndex += currentCurve._resolution * 2;
+//         }
 
-        Vector3[] finalVertices = verticesList.ToArray();
-        Vector2[] finalUv = uvList.ToArray();
-        int[] finalTriangles = trianglesList.ToArray();
+//         Vector3[] finalVertices = verticesList.ToArray();
+//         Vector2[] finalUv = uvList.ToArray();
+//         int[] finalTriangles = trianglesList.ToArray();
 
-        GameObject go = new GameObject();
-        MeshFilter filter = go.AddComponent<MeshFilter>();
-        MeshRenderer renderer = go.AddComponent<MeshRenderer>();
-        Mesh finalMesh = new Mesh();
-        filter.mesh = finalMesh;
+//         GameObject go = new GameObject();
+//         MeshFilter filter = go.AddComponent<MeshFilter>();
+//         MeshRenderer renderer = go.AddComponent<MeshRenderer>();
+//         Mesh finalMesh = new Mesh();
+//         filter.mesh = finalMesh;
 
-        finalMesh.vertices = finalVertices;
-        finalMesh.uv = finalUv;
-        finalMesh.triangles = finalTriangles;
-        renderer.material.color = Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
-    }
+//         finalMesh.vertices = finalVertices;
+//         finalMesh.uv = finalUv;
+//         finalMesh.triangles = finalTriangles;
+//         renderer.material.color = Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
+//     }
 }
 
 

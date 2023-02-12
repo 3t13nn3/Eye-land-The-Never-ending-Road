@@ -13,6 +13,7 @@ public class RoadGeneratorBehaviour : MonoBehaviour
         SOUTH, WEST, NORTH, EAST
     }
 
+    private int _playerDistance = 0;
     public float _difficulty = 0.5f;
 
     public int _totalNumberOfTiles = 100;
@@ -39,6 +40,9 @@ public class RoadGeneratorBehaviour : MonoBehaviour
 
     private List<float> _startTime = new List<float>();
 
+    public int GetPlayerDistance() {
+        return this._playerDistance * 10;
+    }
     // Based on previous tile. Generate a new tile to append and continue the road
     private void GenerateNextTile()
     {
@@ -435,7 +439,7 @@ public class RoadGeneratorBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        //Debug.Log(GetPlayerDistance());
         GameObject car = GameObject.Find("Car");
         Vector3 pos = car.transform.position;
         //car.transform.position = new Vector3(car.transform.position.x, car.transform.position.y, car.transform.position.z + 10f);
@@ -448,7 +452,7 @@ public class RoadGeneratorBehaviour : MonoBehaviour
             if (distLast < this._tileDimension.y * 8)
             {
 
-                if (distFirst > this._tileDimension.y * 5)
+                if (distFirst > this._tileDimension.y * 3)
                 {
                     GameObject.Destroy(this._roadTiles[0]);
                     this._roadTiles.RemoveAt(0);
@@ -466,6 +470,7 @@ public class RoadGeneratorBehaviour : MonoBehaviour
                     this._allEnv.RemoveAt(0);
                     this._allEnvPos.RemoveAt(0);
                     this._startTime.RemoveAt(0);
+                    ++this._playerDistance;
                 }
 
                 DeleteDisturb(pos);

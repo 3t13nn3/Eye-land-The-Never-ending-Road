@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class CarMovingBehaviour : MonoBehaviour
 {
-    private int _onRoad = 0;
-
-    private int _offRoad = 0;
+    private int _meanTime = 20;
+    private int _meanSpeedTimeLimit = 10;
+    private int _meanOnRoadTimeLimit = 10;
 
     private float _totalTime = 0;
 
@@ -35,6 +36,15 @@ public class CarMovingBehaviour : MonoBehaviour
     private float _topLimitY = Screen.height * (1 - _limitFactor);
 
     private float _bottomLimitY = Screen.height * _limitFactor;
+    private List<float> _speedHistory = new List<float>();
+    private float _meanSpeedRate = 0.25f;
+    public float _meanSpeed = 0.0f;
+    private float _meanSpeedTimer = 0f;
+
+    private List<bool> _onRoadHistory = new List<bool>();
+    private float _meanOnRoadRate = 0.25f;
+    public float _meanOnRoad = 0.0f;
+    private float _meanOnRoadTimer = 0f;
 
     // Start is called before the first frame update
     void Start()
@@ -45,8 +55,11 @@ public class CarMovingBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        StartCoroutine(CalculateOnOffRoadRatio());
-        Debug.Log("The on-road ratio is: " + this._onRoadRatio);
+        CalculateOnOffRoadRatio();
+        CalculateMeanSpeed();
+        //Debug.Log("The on-road ratio is: " + this._onRoadRatio);
+        Debug.Log("On Road Ratio: " + this._meanOnRoad);
+        Debug.Log("Mean Speed: " + this._meanSpeed);
 
         // move the car when mouse pressed
         if (Input.GetMouseButton(0))
@@ -60,10 +73,10 @@ public class CarMovingBehaviour : MonoBehaviour
             //  + ", top lim Y :" + topLimitY + ", bot lim Y :" + bottomLimitY + ", pos X :" +mousePosX + ", pos Y :" + mousePosY);
             // Move forward
             if (mousePosY >= this._bottomLimitY && mousePosY <= this._topLimitY)
-                _speed = ComputeSpeed(mousePosY);
+                this._speed = ComputeSpeed(mousePosY);
             else if (mousePosY < this._bottomLimitY)
-                _speed = 0.0f;
-            else if (mousePosY > this._topLimitY) _speed = this._maxSpeed;
+                this._speed = 0.0f;
+            else if (mousePosY > this._topLimitY) this._speed = this._maxSpeed;
 
             // if mousePosX is at left side of screen then turn left, else turn right
             if (mousePosX >= this._leftLimitX && mousePosX <= this._rightLimitX)
@@ -77,11 +90,12 @@ public class CarMovingBehaviour : MonoBehaviour
                 Time.deltaTime * this._sensitivity * turnAngle,
                 0.0f); // apply rotation
         } else {
-            if (_speed > 0)
-                _speed -= _speed * Time.deltaTime;
+            if (this._speed > 0)
+                this._speed -=this. _speed * Time.deltaTime;
         }
 
         transform.Translate(new Vector3(0, 0, _speed * Time.deltaTime)); // apply speed
+
     }
 
     float ComputeSpeed(float mousePosY)
@@ -115,31 +129,50 @@ public class CarMovingBehaviour : MonoBehaviour
 
     private bool IsOnRoad()
     {
-        GameObject[] roadObjects = GameObject.FindGameObjectsWithTag("curve");
+        GameObject[] roadObjects = GameObject.FindGameObjectsWithTag("box");
         Collider vehicleCollider = gameObject.GetComponent<Collider>();
 
-        foreach (GameObject roadObject in roadObjects)
-        {
-            Collider roadCollider = roadObject.GetComponent<MeshCollider>();
-            if (vehicleCollider.bounds.Intersects(roadCollider.bounds))
-            {
-                return true;
+        foreach (GameObject roadObject in roadObjects) {
+            BoxCollider [] roadColliders = roadObject.GetComponents<BoxCollider>();
+            foreach (BoxCollider roadCollider in roadColliders) {
+                //Debug.Log(roadCollider);
+                if (vehicleCollider.bounds.Intersects(roadCollider.bounds)) {
+                    return true;
+                }
             }
         }
 
-        return false;
+            return false;
     }
 
-    private IEnumerator CalculateOnOffRoadRatio()
+    private void CalculateOnOffRoadRatio()
     {
-        this._totalTime += Time.deltaTime;
-
-        if (IsOnRoad())
+        this._meanOnRoadTimer += Time.deltaTime;
+        if (this._meanOnRoadTimer >= this._meanOnRoadRate)
         {
-            this._onRoadTime += Time.deltaTime;
-        }
+            this._meanOnRoadTimer = 0f;
+            if(!(this._onRoadHistory.Count < this._meanOnRoadTimeLimit / this._meanOnRoadRate)) {
+                this._onRoadHistory.RemoveAt(0);
+            }
+            this._onRoadHistory.Add(this.IsOnRoad());
 
-        this._onRoadRatio = this._onRoadTime / this._totalTime;
-        yield return new WaitForSeconds(0.25f);
+            this._meanOnRoad = this._onRoadHistory.Count > 0 ? (float)(this._onRoadHistory.Where(e => e == true).Count() / (float)this._onRoadHistory.Count) : 0.0f;
+        }
     }
+
+
+    private void CalculateMeanSpeed() {
+        this._meanSpeedTimer += Time.deltaTime;
+        if (this._meanSpeedTimer >= this._meanSpeedRate)
+        {
+            this._meanSpeedTimer = 0f;
+            if(!(this._speedHistory.Count < this._meanSpeedTimeLimit / this._meanSpeedRate)) {
+                this._speedHistory.RemoveAt(0);
+            }
+            this._speedHistory.Add(this._speed);
+
+            this._meanSpeed = this._speedHistory.Count > 0 ? this._speedHistory.Average() : 0.0f;
+        }
+    }
+
 }
