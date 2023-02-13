@@ -6,6 +6,8 @@ TagManager:
   tags:
   - curve
   - box
+  - tree
+  - wall
   layers:
   - Default
   - TransparentFX

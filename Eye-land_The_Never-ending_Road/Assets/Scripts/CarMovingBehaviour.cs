@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class CarMovingBehaviour : MonoBehaviour
@@ -176,4 +177,12 @@ public class CarMovingBehaviour : MonoBehaviour
         }
     }
 
+    void OnCollisionEnter(Collision collision) {
+        if (collision.gameObject.tag == "tree" || collision.gameObject.tag == "wall")
+        {
+            Debug.Log("HITTING AN END GAME ELEMENT");
+            Time.timeScale = 0;
+            SceneManager.LoadScene("GameOverScene", LoadSceneMode.Additive);
+        }
+    }
 }

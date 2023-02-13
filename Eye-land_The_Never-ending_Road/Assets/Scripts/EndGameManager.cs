@@ -35,6 +35,11 @@ public class EndGameManager : MonoBehaviour
         
     }
 
+    public void Replay()
+    {
+        Time.timeScale = 1;
+        SceneLoader.LoadScene("Main Scene");
+    }
     
     public void saveHighestScore()
     {
