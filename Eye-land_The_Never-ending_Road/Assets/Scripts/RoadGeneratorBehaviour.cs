@@ -188,6 +188,10 @@ public class RoadGeneratorBehaviour : MonoBehaviour
                 );
                 this._tile.transform.localScale = new Vector3(this._tileDimension.x, this._tileThickness * rand, this._tileDimension.y);
                 GameObject instance = Instantiate(this._tile);
+                // Check if that is a wall
+                if(Math.Abs(i) == 1){
+                    instance.tag = "wall";
+                }
                 instance.GetComponent<Renderer>().material.color = new Color(r, g, b);
                 envGO.Add(instance);
 

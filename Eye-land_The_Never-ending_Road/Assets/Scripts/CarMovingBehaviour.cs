@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class CarMovingBehaviour : MonoBehaviour
@@ -58,8 +59,8 @@ public class CarMovingBehaviour : MonoBehaviour
         CalculateOnOffRoadRatio();
         CalculateMeanSpeed();
         //Debug.Log("The on-road ratio is: " + this._onRoadRatio);
-        Debug.Log("On Road Ratio: " + this._meanOnRoad);
-        Debug.Log("Mean Speed: " + this._meanSpeed);
+        // Debug.Log("On Road Ratio: " + this._meanOnRoad);
+        // Debug.Log("Mean Speed: " + this._meanSpeed);
 
         // move the car when mouse pressed
         if (Input.GetMouseButton(0))
@@ -175,4 +176,11 @@ public class CarMovingBehaviour : MonoBehaviour
         }
     }
 
+    void OnCollisionEnter(Collision collision) {
+        if (collision.gameObject.tag == "tree" || collision.gameObject.tag == "wall")
+        {
+            Debug.Log("HITTING AN END GAME ELEMENT");
+            SceneManager.LoadScene("GameOverScene", LoadSceneMode.Additive);
+        }
+    }
 }
