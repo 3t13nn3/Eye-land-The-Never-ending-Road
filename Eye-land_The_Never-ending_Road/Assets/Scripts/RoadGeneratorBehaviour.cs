@@ -23,10 +23,10 @@ public class RoadGeneratorBehaviour : MonoBehaviour
     public GameObject _tile;
     public GameObject _tree;
     public GameObject _bread;
-    private List<GameObject> _allTrees = new List<GameObject>();
+    public List<GameObject> _allTrees = new List<GameObject>();
 
        private List<Vector3> _allTreesRot = new List<Vector3>();
-    private List<GameObject> _allBreads = new List<GameObject>();
+    public List<GameObject> _allBreads = new List<GameObject>();
     private List<Vector3> _allBreadsPos = new List<Vector3>();
     private List<Vector3> _allBreadsRot = new List<Vector3>();
     private List<GameObject> _roadTiles = new List<GameObject>();
