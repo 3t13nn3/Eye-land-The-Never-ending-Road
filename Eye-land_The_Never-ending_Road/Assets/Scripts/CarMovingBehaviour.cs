@@ -180,6 +180,7 @@ public class CarMovingBehaviour : MonoBehaviour
         if (collision.gameObject.tag == "tree" || collision.gameObject.tag == "wall")
         {
             Debug.Log("HITTING AN END GAME ELEMENT");
+            Time.timeScale = 0;
             SceneManager.LoadScene("GameOverScene", LoadSceneMode.Additive);
         }
     }
