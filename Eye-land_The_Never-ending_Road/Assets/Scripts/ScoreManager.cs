@@ -6,32 +6,28 @@ using TMPro;
 public class ScoreManager : MonoBehaviour
 {
     public float fadeDuration = 1.0f;
-    public RoadGeneratorBehaviour rg;
-    public GameObject car;
+    [SerializeField] GameObject rg;
     public TextMeshProUGUI scoreTMP;
     public static int score;
-
+    float timer = 0.0f;
 
     // Start is called before the first frame update
     void Start()
     {
-        rg = GetComponent<RoadGeneratorBehaviour>();
         scoreTMP = GetComponent<TextMeshProUGUI>();
-        car = GameObject.Find("Car");
         scoreTMP.alpha = 0.0f;
     }
 
     // Update is called once per frame
     void Update()
     {
-        rg = GetComponent<RoadGeneratorBehaviour>();
-        Debug.Log(rg);
-        // score = rg.GetPlayerDistance();
-        // if (score > 0 && score%100 == 0)
-        // {
-        //     StartCoroutine(fadeInScore(score));
-        //     StartCoroutine(fadeOutScore(score));
-        // }
+        score = rg.GetComponent<RoadGeneratorBehaviour>().GetPlayerDistance();
+        // Debug.Log(score);
+        if (score > 0 && score%50 == 0)
+        {
+            StartCoroutine(fadeInScore(score));
+            StartCoroutine(fadeOutScore(score));
+        }
     }
 
     public IEnumerator fadeInScore(int scoreToDisplay)
@@ -40,6 +36,7 @@ public class ScoreManager : MonoBehaviour
         while (currentAlpha < 1.0f)
         {
             currentAlpha += Time.deltaTime / fadeDuration;
+            scoreTMP.transform.position = Input.mousePosition;
             scoreTMP.text = scoreToDisplay.ToString();
             scoreTMP.alpha = currentAlpha;
             yield return null;

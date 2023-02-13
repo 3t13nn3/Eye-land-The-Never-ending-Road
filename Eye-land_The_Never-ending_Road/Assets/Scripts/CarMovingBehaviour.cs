@@ -19,6 +19,8 @@ public class CarMovingBehaviour : MonoBehaviour
 
     private float _speed;
 
+    private float _turnAngle;
+
     private float _maxSpeed = 30.0f;
 
     private float _maxAngle = 15.0f;
@@ -51,6 +53,7 @@ public class CarMovingBehaviour : MonoBehaviour
     void Start()
     {
        this._speed = 0.0f;
+       this._turnAngle = 0.0f;
     }
 
     // Update is called once per frame
@@ -68,8 +71,6 @@ public class CarMovingBehaviour : MonoBehaviour
             float mousePosX = Input.mousePosition.x;
             float mousePosY = Input.mousePosition.y;
 
-            float turnAngle = 0.0f;
-
             // Debug.Log("mid X:" + screenMiddleX + ", mid Y :" + screenMiddleY  + ", left lim X :" + leftLimitX + ", right lim X :" + rightLimitX
             //  + ", top lim Y :" + topLimitY + ", bot lim Y :" + bottomLimitY + ", pos X :" +mousePosX + ", pos Y :" + mousePosY);
             // Move forward
@@ -81,22 +82,21 @@ public class CarMovingBehaviour : MonoBehaviour
 
             // if mousePosX is at left side of screen then turn left, else turn right
             if (mousePosX >= this._leftLimitX && mousePosX <= this._rightLimitX)
-                turnAngle = ComputeTurnAngle(mousePosX);
+                _turnAngle = ComputeTurnAngle(mousePosX);
             else if (mousePosX < this._leftLimitX)
-                turnAngle = -this._maxAngle;
-            else if (mousePosX > this._rightLimitX) turnAngle = this._maxAngle;
+                _turnAngle = -this._maxAngle;
+            else if (mousePosX > this._rightLimitX)
+                _turnAngle = this._maxAngle;
 
-            transform
-                .Rotate(0.0f,
-                Time.deltaTime * this._sensitivity * turnAngle,
-                0.0f); // apply rotation
         } else {
             if (this._speed > 0)
-                this._speed -=this. _speed * Time.deltaTime;
+                this._speed -= this. _speed * Time.deltaTime;
+            if (this._turnAngle != 0)
+                this._turnAngle -= this._turnAngle * Time.deltaTime;
         }
 
         transform.Translate(new Vector3(0, 0, _speed * Time.deltaTime)); // apply speed
-
+        transform.Rotate(0.0f, Time.deltaTime * this._sensitivity * _turnAngle, 0.0f); // apply rotation
     }
 
     float ComputeSpeed(float mousePosY)

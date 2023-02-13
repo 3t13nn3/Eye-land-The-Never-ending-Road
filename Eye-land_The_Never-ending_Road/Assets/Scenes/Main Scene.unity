@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.3756804, g: 0.3996103, b: 0.5903921, a: 1}
+  m_IndirectSpecularColor: {r: 0.3756803, g: 0.39961028, b: 0.5903921, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -623,7 +623,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fadeDuration: 1
-  car: {fileID: 0}
+  rg: {fileID: 28023489}
   scoreTMP: {fileID: 0}
 --- !u!1 &705507993
 GameObject:
@@ -1048,6 +1048,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _sensitivity: 10
+  _meanSpeed: 0
+  _meanOnRoad: 0
 --- !u!114 &1727319304
 MonoBehaviour:
   m_ObjectHideFlags: 0
