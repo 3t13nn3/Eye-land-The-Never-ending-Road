@@ -144,7 +144,7 @@ public class CarMovingBehaviour : MonoBehaviour
             }
         }
 
-            return false;
+        return false;
     }
 
     private void CalculateOnOffRoadRatio()
@@ -162,6 +162,10 @@ public class CarMovingBehaviour : MonoBehaviour
         }
     }
 
+    public float GetOnOffRoadRatio()
+    {
+        return this._meanOnRoad;
+    }
 
     private void CalculateMeanSpeed() {
         this._meanSpeedTimer += Time.deltaTime;
@@ -175,6 +179,11 @@ public class CarMovingBehaviour : MonoBehaviour
 
             this._meanSpeed = this._speedHistory.Count > 0 ? this._speedHistory.Average() : 0.0f;
         }
+    }
+
+    public float GetMeanSpeed()
+    {
+        return this._meanSpeed;
     }
 
     void OnCollisionEnter(Collision collision) {
