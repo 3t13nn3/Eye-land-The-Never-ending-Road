@@ -32,7 +32,7 @@ public class RoadGeneratorBehaviour : MonoBehaviour
     private List<GameObject> _roadTiles = new List<GameObject>();
     private List<int> _directionHistory = new List<int>();
 
-    private List<QuadraticBezierCurve> _allCurves = new List<QuadraticBezierCurve>();
+    public List<QuadraticBezierCurve> _allCurves = new List<QuadraticBezierCurve>();
     private List<GameObject> _allCurvesGO = new List<GameObject>();
     public List<List<GameObject>> _allEnv = new List<List<GameObject>>();
     public List<List<Vector3>> _allEnvPos = new List<List<Vector3>>();
@@ -402,10 +402,7 @@ public class RoadGeneratorBehaviour : MonoBehaviour
     void Start()
     {
         // First tile is always the same, straight
-        {
-            if (!EndGameManager.replayGame)
-                BeginGameManager.loadMenuScene();
-            
+        {  
             this._tile.transform.position = new Vector3(0f, 0.5f, 0f);
             this._tile.transform.localScale = new Vector3(this._tileDimension.x, this._tileThickness, this._tileDimension.y);
             GameObject instance = Instantiate(this._tile);
@@ -434,6 +431,7 @@ public class RoadGeneratorBehaviour : MonoBehaviour
         }
 
         GenerateEnv(this._totalNumberOfTiles);
+
         /*
         // Generating all the road as one object
         QuadraticBezierCurve ccc = gameObject.AddComponent<QuadraticBezierCurve>();

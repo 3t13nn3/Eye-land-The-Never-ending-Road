@@ -10,7 +10,7 @@ public class CarMovingBehaviour : MonoBehaviour
     public Text _countdownText;
     private bool _start = false;
     private float _startTime = 0f;
-    private float _startTimetoWait = 3f;
+    private float _startTimetoWait = 4f;
     private int _meanTime = 20;
     private int _meanSpeedTimeLimit = 10;
     private int _meanOnRoadTimeLimit = 10;

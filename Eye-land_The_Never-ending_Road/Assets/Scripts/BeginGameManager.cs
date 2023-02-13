@@ -9,7 +9,7 @@ public class BeginGameManager : MonoBehaviour
     
     public static void loadMenuScene()
     {
-        Time.timeScale = 0;
+        //Time.timeScale = 0;
         SceneManager.LoadScene("MenuScene", LoadSceneMode.Additive);
     }
     
@@ -17,6 +17,8 @@ public class BeginGameManager : MonoBehaviour
     {
         Time.timeScale = 1;
         SceneManager.UnloadSceneAsync("MenuScene");
+        SceneManager.UnloadSceneAsync("MenuBackGroundScene");
+        SceneManager.LoadScene("Main Scene");
         
     }
 
