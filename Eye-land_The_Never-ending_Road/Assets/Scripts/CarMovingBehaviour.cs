@@ -46,6 +46,7 @@ public class CarMovingBehaviour : MonoBehaviour
     public float _meanOnRoad = 0.0f;
     private float _meanOnRoadTimer = 0f;
 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -58,8 +59,8 @@ public class CarMovingBehaviour : MonoBehaviour
         CalculateOnOffRoadRatio();
         CalculateMeanSpeed();
         //Debug.Log("The on-road ratio is: " + this._onRoadRatio);
-        Debug.Log("On Road Ratio: " + this._meanOnRoad);
-        Debug.Log("Mean Speed: " + this._meanSpeed);
+        // Debug.Log("On Road Ratio: " + this._meanOnRoad);
+        // Debug.Log("Mean Speed: " + this._meanSpeed);
 
         // move the car when mouse pressed
         if (Input.GetMouseButton(0))
