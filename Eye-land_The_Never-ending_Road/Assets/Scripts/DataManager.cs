@@ -45,7 +45,7 @@ public class DataManager : MonoBehaviour
                 float meanSpeed = car.GetComponent<CarMovingBehaviour>().GetMeanSpeed();
                 string data = distance.ToString() + ", " + nbOfJerks.ToString() + ", " + nbLookDisruptive.ToString() + ", "
                 + meanOnRoadRate.ToString() + ", " + meanSpeed.ToString();
-                Debug.Log(this.elapsedTime + " : " + data);
+                // Debug.Log(this.elapsedTime + " : " + data);
                 this.writeToCsv(data);
             }
         }
