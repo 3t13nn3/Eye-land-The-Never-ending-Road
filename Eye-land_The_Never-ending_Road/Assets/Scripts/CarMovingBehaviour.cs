@@ -1,20 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class CarMovingBehaviour : MonoBehaviour
 {
+    public Text _countdownText;
+    private bool _start = false;
+    private float _startTime = 0f;
+    private float _startTimetoWait = 3f;
     private int _meanTime = 20;
     private int _meanSpeedTimeLimit = 10;
     private int _meanOnRoadTimeLimit = 10;
 
     private float _totalTime = 0;
-
-    private float _onRoadTime = 0;
-
-    private float _onRoadRatio = 0;
 
     public float _sensitivity = 10f;
 
@@ -57,47 +58,94 @@ public class CarMovingBehaviour : MonoBehaviour
        this._turnAngle = 0.0f;
     }
 
+    void CheckStart(Vector2 _position) {
+        Vector3 currentPos = new Vector3(_position.x, _position.y, Camera.main.nearClipPlane);
+
+        Ray ray = Camera.main.ScreenPointToRay(currentPos);
+        RaycastHit hit;
+        if(Physics.Raycast( ray, out hit, 500)) {
+            if(hit.transform.gameObject.name == "Car"){
+                this._startTime += Time.deltaTime;
+                if(this._startTime >= this._startTimetoWait){
+                    this._startTime = 0f;
+                    this._start = true;
+                }
+                float timeLeft = this._startTimetoWait - _startTime;
+                _countdownText.text = "Be ready:\n" + timeLeft.ToString("0.0");
+            } else {
+                this._startTime = 0f;
+            }
+        } else {
+            this._startTime = 0f;
+        }
+        
+    }
     // Update is called once per frame
     void Update()
-    {
-        CalculateOnOffRoadRatio();
-        CalculateMeanSpeed();
-        //Debug.Log("The on-road ratio is: " + this._onRoadRatio);
-        // Debug.Log("On Road Ratio: " + this._meanOnRoad);
-        // Debug.Log("Mean Speed: " + this._meanSpeed);
+    {   
+        
+        _countdownText.text = "Fix at the car to begin";
 
-        // move the car when mouse pressed
-        if (Input.GetMouseButton(0))
-        {
-            float mousePosX = Input.mousePosition.x;
-            float mousePosY = Input.mousePosition.y;
 
-            // Debug.Log("mid X:" + screenMiddleX + ", mid Y :" + screenMiddleY  + ", left lim X :" + leftLimitX + ", right lim X :" + rightLimitX
-            //  + ", top lim Y :" + topLimitY + ", bot lim Y :" + bottomLimitY + ", pos X :" +mousePosX + ", pos Y :" + mousePosY);
-            // Move forward
-            if (mousePosY >= this._bottomLimitY && mousePosY <= this._topLimitY)
-                this._speed = ComputeSpeed(mousePosY);
-            else if (mousePosY < this._bottomLimitY)
-                this._speed = 0.0f;
-            else if (mousePosY > this._topLimitY) this._speed = this._maxSpeed;
-
-            // if mousePosX is at left side of screen then turn left, else turn right
-            if (mousePosX >= this._leftLimitX && mousePosX <= this._rightLimitX)
-                _turnAngle = ComputeTurnAngle(mousePosX);
-            else if (mousePosX < this._leftLimitX)
-                _turnAngle = -this._maxAngle;
-            else if (mousePosX > this._rightLimitX)
-                _turnAngle = this._maxAngle;
-
-        } else {
-            if (this._speed > 0)
-                this._speed -= this. _speed * Time.deltaTime;
-            if (this._turnAngle != 0)
-                this._turnAngle -= this._turnAngle * Time.deltaTime;
+        //Debug.Log(this._start);
+        if(!this._start) {
+            CheckStart(new Vector2(Input.mousePosition.x, Input.mousePosition.y));
         }
 
-        transform.Translate(new Vector3(0, 0, _speed * Time.deltaTime)); // apply speed
-        transform.Rotate(0.0f, Time.deltaTime * this._sensitivity * _turnAngle, 0.0f); // apply rotation
+        if(this._start) {
+            CalculateOnOffRoadRatio();
+            CalculateMeanSpeed();
+
+                
+            _startTime += Time.deltaTime;
+            _countdownText.text = "Let's ride !";
+            if (_startTime >= 2f)
+            {
+                _countdownText.text = "";
+            }
+            
+            //Debug.Log("The on-road ratio is: " + this._onRoadRatio);
+            // Debug.Log("On Road Ratio: " + this._meanOnRoad);
+            // Debug.Log("Mean Speed: " + this._meanSpeed);
+
+            // move the car when mouse pressed
+            if (Input.GetMouseButton(0))
+            {
+                float mousePosX = Input.mousePosition.x;
+                float mousePosY = Input.mousePosition.y;
+
+                // Debug.Log("mid X:" + screenMiddleX + ", mid Y :" + screenMiddleY  + ", left lim X :" + leftLimitX + ", right lim X :" + rightLimitX
+                //  + ", top lim Y :" + topLimitY + ", bot lim Y :" + bottomLimitY + ", pos X :" +mousePosX + ", pos Y :" + mousePosY);
+                // Move forward
+                if (mousePosY >= this._bottomLimitY && mousePosY <= this._topLimitY)
+                    this._speed = ComputeSpeed(mousePosY);
+                else if (mousePosY < this._bottomLimitY)
+                    this._speed = 0.0f;
+                else if (mousePosY > this._topLimitY) this._speed = this._maxSpeed;
+
+                // if mousePosX is at left side of screen then turn left, else turn right
+                if (mousePosX >= this._leftLimitX && mousePosX <= this._rightLimitX)
+                    _turnAngle = ComputeTurnAngle(mousePosX);
+                else if (mousePosX < this._leftLimitX)
+                    _turnAngle = -this._maxAngle;
+                else if (mousePosX > this._rightLimitX)
+                    _turnAngle = this._maxAngle;
+
+            } else {
+                if (this._speed > 0)
+                    this._speed -= this. _speed * Time.deltaTime;
+                if (this._turnAngle != 0)
+                    this._turnAngle -= this._turnAngle * Time.deltaTime;
+            }
+
+            transform.Translate(new Vector3(0, 0, _speed * Time.deltaTime)); // apply speed
+            transform.Rotate(0.0f, Time.deltaTime * this._sensitivity * _turnAngle, 0.0f); // apply rotation
+
+            if(Input.GetKey(KeyCode.Q))
+            {
+                SceneManager.LoadScene("GameOverScene", LoadSceneMode.Additive);
+            }
+        }
     }
 
     float ComputeSpeed(float mousePosY)

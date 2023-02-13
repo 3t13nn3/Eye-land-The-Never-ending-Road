@@ -24,7 +24,6 @@ public class EndGameManager : MonoBehaviour
     
     [SerializeField] private playersScore _playersScore = new playersScore();
 
-    
     void LateUpdate()
     {
         finalScoreText.text = ScoreManager.score + "";
@@ -112,7 +111,7 @@ public class EndGameManager : MonoBehaviour
         for (int i = 0; i < jsonListstring.Count -1 ; i++)
         {
             jsonListstring[i] = jsonListstring[i] + "}";
-            // Debug.Log(jsonListstring[i]);
+            Debug.Log(jsonListstring[i]);
             listAllScore.Add(JsonUtility.FromJson<playersScore>(jsonListstring[i]));
         }
         return listAllScore;

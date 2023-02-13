@@ -5,7 +5,7 @@ public class SceneLoader : MonoBehaviour
 {
     public static void LoadScene(string sceneName)
     {
-        SceneManager.LoadScene (sceneName);
+        SceneManager.LoadScene(sceneName);
     }
 
     public void QuitGame()
@@ -13,7 +13,7 @@ public class SceneLoader : MonoBehaviour
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else
-         Application.Quit();
+        Application.Quit();
 #endif
     }
 }

@@ -16,8 +16,8 @@ public class RoadGeneratorBehaviour : MonoBehaviour
     private int _playerDistance = 0;
     public float _difficulty = 0.5f;
 
-    public int _totalNumberOfTiles = 100;
-    public Vector2 _tileDimension = new Vector2(30.0f, 30.0f);
+    public int _totalNumberOfTiles = 10;
+    public Vector2 _tileDimension = new Vector2(40.0f, 40.0f);
     public float _tileThickness = 0.1f;
 
     public GameObject _tile;
@@ -36,7 +36,7 @@ public class RoadGeneratorBehaviour : MonoBehaviour
     private List<GameObject> _allCurvesGO = new List<GameObject>();
     public List<List<GameObject>> _allEnv = new List<List<GameObject>>();
     public List<List<Vector3>> _allEnvPos = new List<List<Vector3>>();
-    public int _randValueToSpawnEnv = 80;
+    public int _randValueToSpawnEnv = 140;
 
     private List<float> _startTime = new List<float>();
 
