@@ -403,6 +403,9 @@ public class RoadGeneratorBehaviour : MonoBehaviour
     {
         // First tile is always the same, straight
         {
+            if (!EndGameManager.replayGame)
+                BeginGameManager.loadMenuScene();
+            
             this._tile.transform.position = new Vector3(0f, 0.5f, 0f);
             this._tile.transform.localScale = new Vector3(this._tileDimension.x, this._tileThickness, this._tileDimension.y);
             GameObject instance = Instantiate(this._tile);

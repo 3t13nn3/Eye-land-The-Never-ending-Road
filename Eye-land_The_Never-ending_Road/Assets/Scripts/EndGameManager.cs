@@ -17,6 +17,7 @@ public class EndGameManager : MonoBehaviour
     //public TextMeshProUGUI highestScoreText;
 
     public InputField nameText;
+    public static bool replayGame = false;
     
     private string savedName;
 
@@ -36,6 +37,7 @@ public class EndGameManager : MonoBehaviour
 
     public void Replay()
     {
+        replayGame = true;
         Time.timeScale = 1;
         SceneLoader.LoadScene("Main Scene");
     }
