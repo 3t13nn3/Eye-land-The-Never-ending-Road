@@ -242,4 +242,9 @@ public class CarMovingBehaviour : MonoBehaviour
             SceneManager.LoadScene("GameOverScene", LoadSceneMode.Additive);
         }
     }
+
+    public bool gameStart()
+    {
+        return this._start;
+    }
 }

@@ -38,7 +38,7 @@ public class OculoBehaviour : MonoBehaviour
         Vector3 mousePos = Input.mousePosition;
         HandleFixationHistory();
         CheckIfLookAtDisturbing(new Vector2(mousePos.x, mousePos.y));
-        Debug.Log("Count of fixation in the last " + this._FREQ_RECOVER_FIXATION + " seconds : " + GetTheNumberOfFixationsInLastNSecond() + " on " + GetTheNumberOfObjectFixedInLastNSecond() + " objects.");
+        // Debug.Log("Count of fixation in the last " + this._FREQ_RECOVER_FIXATION + " seconds : " + GetTheNumberOfFixationsInLastNSecond() + " on " + GetTheNumberOfObjectFixedInLastNSecond() + " objects.");
     }
 
 
@@ -96,11 +96,11 @@ public class OculoBehaviour : MonoBehaviour
         }
     }
 
-    int GetTheNumberOfFixationsInLastNSecond() {
+    public int GetTheNumberOfFixationsInLastNSecond() {
         return this._fixations[0].Sum(x => x.Value);
     }
 
-    int GetTheNumberOfObjectFixedInLastNSecond() {
+    public int GetTheNumberOfObjectFixedInLastNSecond() {
         return this._fixations[0].Count;
     }
 }
