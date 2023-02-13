@@ -17,13 +17,18 @@ public class EndGameManager : MonoBehaviour
     //public TextMeshProUGUI highestScoreText;
 
     public InputField nameText;
-    public static bool replayGame = false;
+    public static bool replayGame;
     
     private string savedName;
 
     [SerializeField] private int savedHighScore;
     
     [SerializeField] private playersScore _playersScore = new playersScore();
+
+    private void Start()
+    {
+        replayGame = false;
+    }
 
     void LateUpdate()
     {
