@@ -14,7 +14,7 @@ public class EndGameManager : MonoBehaviour
 {
    public TextMeshProUGUI finalScoreText;
 
-    //public TextMeshProUGUI highestScoreText;
+    public TextMeshProUGUI highestScoreText;
 
     public InputField nameText;
     public static bool replayGame;
@@ -63,7 +63,7 @@ public class EndGameManager : MonoBehaviour
             savedHighScore = ScoreManager.score;
             PlayerPrefs.SetInt("highestScore", savedHighScore);
         }
-        //highestScoreText.text = PlayerPrefs.GetInt("highestScore").ToString();
+        highestScoreText.text = PlayerPrefs.GetInt("highestScore").ToString();
     }
 
     public void GetPlayerName()
