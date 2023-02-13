@@ -402,6 +402,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32fb49d8f909ee343a2ba29dc2055762, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _ease: {fileID: 0}
   _difficulty: 0.5
   _totalNumberOfTiles: 10
   _tileDimension: {x: 40, y: 40}

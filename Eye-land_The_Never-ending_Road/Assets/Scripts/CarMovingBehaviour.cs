@@ -23,7 +23,7 @@ public class CarMovingBehaviour : MonoBehaviour
 
     private float _turnAngle;
 
-    private float _maxSpeed = 30.0f;
+    public float _maxSpeed = 30.0f;
 
     private float _maxAngle = 15.0f;
 
@@ -85,8 +85,6 @@ public class CarMovingBehaviour : MonoBehaviour
     {   
         
         _countdownText.text = "Fix at the car to begin";
-
-
         //Debug.Log(this._start);
         if(!this._start) {
             CheckStart(new Vector2(Input.mousePosition.x, Input.mousePosition.y));

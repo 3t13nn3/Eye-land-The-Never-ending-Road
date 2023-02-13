@@ -96,11 +96,11 @@ public class OculoBehaviour : MonoBehaviour
         }
     }
 
-    int GetTheNumberOfFixationsInLastNSecond() {
+    public int GetTheNumberOfFixationsInLastNSecond() {
         return this._fixations[0].Sum(x => x.Value);
     }
 
-    int GetTheNumberOfObjectFixedInLastNSecond() {
+    public int GetTheNumberOfObjectFixedInLastNSecond() {
         return this._fixations[0].Count;
     }
 }

@@ -152,7 +152,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32fb49d8f909ee343a2ba29dc2055762, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _difficulty: 0.5
+  _ease: {fileID: 2135236242}
+  _difficulty: 0.35
   _totalNumberOfTiles: 10
   _tileDimension: {x: 40, y: 40}
   _tileThickness: 0.1
@@ -922,6 +923,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _countdownText: {fileID: 2027218161}
   _sensitivity: 10
+  _maxSpeed: 30
   _meanSpeed: 0
   _meanOnRoad: 0
 --- !u!114 &1727319304
@@ -1052,3 +1054,57 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 800, y: 250}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &2135236242
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2135236244}
+  - component: {fileID: 2135236243}
+  m_Layer: 0
+  m_Name: Ease
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2135236243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2135236242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16e77d71a5e47044a8ed737599a00ee8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _road: {fileID: 28023489}
+  _car: {fileID: 1727319302}
+  _oculo: {fileID: 1614683917}
+  _traveledDistanceRatio: 0
+  _jerksRatio: 0
+  _disturbRatio: 0
+  _onRoadRatio: 0
+  _averageSpeedRatio: 0
+  _totalRatio: 0
+  _pupilSizeRatio: 0
+  _totalRatioHistory: []
+--- !u!4 &2135236244
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2135236242}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
