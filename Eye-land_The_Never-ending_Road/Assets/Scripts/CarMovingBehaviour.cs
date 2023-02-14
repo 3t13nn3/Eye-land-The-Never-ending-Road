@@ -7,6 +7,7 @@ using UnityEngine;
 
 public class CarMovingBehaviour : MonoBehaviour
 {
+    public GameObject _view;
     public GameObject _RoadGenerator;
     private bool _playMusic = false;
     public Text _countdownText;

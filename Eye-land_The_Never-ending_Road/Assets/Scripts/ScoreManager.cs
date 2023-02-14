@@ -5,6 +5,7 @@ using TMPro;
 
 public class ScoreManager : MonoBehaviour
 {
+    public GameObject _view;
     public float fadeDuration = 1.0f;
     [SerializeField] GameObject rg;
     public TextMeshProUGUI scoreTMP;

@@ -20,13 +20,13 @@ namespace Tobii.Gaming.Examples.GazePointData
 			if (gazePoint.IsValid)
 			{
 				Vector2 gazePosition = gazePoint.Screen;
-
-				Vector2 roundedSampleInput =
-					new Vector2(Mathf.RoundToInt(gazePosition.x), Mathf.RoundToInt(gazePosition.y));
-				Debug.Log("x (in px): " + roundedSampleInput.x);
-				Debug.Log("y (in px): " + roundedSampleInput.y);
 				GetComponent<Image>().transform.position = new Vector3(gazePosition.x, gazePosition.y, 0);
 			}
+		}
+
+		Vector2 GetViewPoint() {
+			GazePoint gazePoint = TobiiAPI.GetGazePoint();
+			return gazePoint.Screen;
 		}
 	}
 }

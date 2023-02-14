@@ -6,6 +6,7 @@ using System;
 
 public class OculoBehaviour : MonoBehaviour
 {
+    public GameObject _view;
     public GameObject _RoadGenerator;
     public GameObject car;
 
