@@ -16,6 +16,7 @@ public class OculoBehaviour : MonoBehaviour
     public int _FREQ_RECOVER_FIXATION = 10;
     public float _fixationTimer = 0f;
     List<Dictionary<int, int>> _fixations = new List<Dictionary<int, int>>();
+    List<int> _jerks = new List<int>();
 
     public float _FIXATION_VALUE = 0.250f;
     public int _fixationCount = 0;
@@ -25,9 +26,11 @@ public class OculoBehaviour : MonoBehaviour
     
     private int rectWidth = 15;
     private int rectHeight = 10;
-    private Rect fixationZone;
-    private float fixationTimer = 0.0f;
-    private int fixationCount = 0;
+    private Rect _jerkZone;
+    private float _jerkTimer = 0.0f;
+    private int _jerkCount = 0;
+
+    Vector2 _viewPosition = new Vector2(0f, 0f);
 
     void Start()
     {
@@ -39,54 +42,65 @@ public class OculoBehaviour : MonoBehaviour
         for (int i = 0; i < _FREQ_RECOVER_FIXATION; i++)
         {
             this._fixations.Add(new Dictionary<int, int>());
+            this._jerks.Add(0);
         }
+        
+        
 
-        // this.fixationZone = null;
+        // this._jerkZone = null;
     }
 
     // Update is called once per frame
     void Update()
     {   
+        this._viewPosition = this._view.GetComponent<Tobii.Gaming.ViewHandler>().GetViewCoord();
         // We will replace that by the oculos record position
         Vector3 mousePos = Input.mousePosition;
         HandleFixationHistory();
-        CheckIfLookAtDisturbing(new Vector2(mousePos.x, mousePos.y));
+
         // Debug.Log("Count of fixation in the last " + this._FREQ_RECOVER_FIXATION + " seconds : " + GetTheNumberOfFixationsInLastNSecond() + " on " + GetTheNumberOfObjectFixedInLastNSecond() + " objects.");
         
-        if (car.GetComponent<CarMovingBehaviour>().gameStart())
-            this.CheckJerks(mousePos);
+        if (car.GetComponent<CarMovingBehaviour>().gameStart()){
+            CheckIfLookAtDisturbing(this._viewPosition);
+            this.CheckJerks(this._viewPosition);
+        }
     }
 
     private void CheckJerks(Vector2 eyePosition)
     {
         // if eye is into fixation zone
-        if (this.fixationZone.Contains(eyePosition))
+        if (this._jerkZone.Contains(eyePosition))
         {
-            // Debug.Log("eye (" + eyePosition + ") into fixation zone, fixed time : " + this.fixationTimer);
+            // Debug.Log("eye (" + eyePosition + ") into fixation zone, fixed time : " + this._jerkTimer);
             // increase fixation time
-            this.fixationTimer += Time.deltaTime;
+            this._jerkTimer += Time.deltaTime;
             // if fixation time is higher than FIXATION_VALUE then we count it as a fixation
-            if (this.fixationTimer > this._FIXATION_VALUE)
+            if (this._jerkTimer > this._FIXATION_VALUE)
             {
-                this.fixationCount++;
-                this.fixationTimer = 0.0f;
-                // Debug.Log("add fixation count : " + this.fixationCount);
+                this._jerkCount++;
+                this._jerkTimer = 0.0f;
+
+                for (int i = 0; i < this._FREQ_RECOVER_FIXATION; i++)
+                {
+                    ++this._jerks[i];
+                }
+                // Debug.Log("add fixation count : " + this._jerkCount);
             }
         }
         // else create another fixation zone since user looks at another position
         else
         {
-            this.fixationZone = new Rect(eyePosition.x - (this.rectWidth/2), eyePosition.y - (this.rectHeight/2), 
+            this._jerkZone = new Rect(eyePosition.x - (this.rectWidth/2), eyePosition.y - (this.rectHeight/2), 
                 this.rectWidth, this.rectHeight);
-            // Debug.Log("eye (" + eyePosition + ") not into zone, create new zone : " + this.fixationZone);
+            // Debug.Log("eye (" + eyePosition + ") not into zone, create new zone : " + this._jerkZone);
         }
     }
 
     public int GetNbOfJerks()
     {
-        int nbOfJerks = this.fixationCount;
-        this.fixationTimer = 0.0f;
-        this.fixationCount = 0;
+        int nbOfJerks = this._jerkCount;
+        this._jerkTimer = 0.0f;
+        this._jerkCount = 0;
         return nbOfJerks;
     }
 
@@ -133,6 +147,18 @@ public class OculoBehaviour : MonoBehaviour
         
     }
 
+    void HandleJerkHistory() {
+        this._jerkTimer += Time.deltaTime;
+        if (this._jerkTimer >= 1f)
+        {
+            this._jerkTimer = 0f;
+            if(!(this._jerks.Count < this._FREQ_RECOVER_FIXATION / 1f)) {
+                this._jerks.RemoveAt(0);
+            }
+            this._jerks.Add(0);
+        }
+    }
+
     void HandleFixationHistory() {
         this._fixationTimer += Time.deltaTime;
         if (this._fixationTimer >= 1f)
@@ -151,5 +177,9 @@ public class OculoBehaviour : MonoBehaviour
 
     public int GetTheNumberOfObjectFixedInLastNSecond() {
         return this._fixations[0].Count;
+    }
+
+    public int GetTheNumberOfObjectJerkInLastNSecond() {
+        return this._jerks[0];
     }
 }

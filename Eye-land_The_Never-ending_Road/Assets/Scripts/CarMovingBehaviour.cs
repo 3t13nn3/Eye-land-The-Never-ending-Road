@@ -17,6 +17,7 @@ public class CarMovingBehaviour : MonoBehaviour
     private int _meanTime = 20;
     private int _meanSpeedTimeLimit = 10;
     private int _meanOnRoadTimeLimit = 10;
+    Vector2 _viewPosition = new Vector2(0f, 0f);
 
     private float _totalTime = 0;
 
@@ -34,15 +35,16 @@ public class CarMovingBehaviour : MonoBehaviour
 
     private float _screenMiddleY = Screen.height / 2;
 
-    private static float _limitFactor = 0.15f;
+    private static float _limitFactorX = 0.075f;
+    private static float _limitFactorY = 0.25f;
 
-    private float _leftLimitX = Screen.width * _limitFactor;
+    private float _leftLimitX = Screen.width * _limitFactorX;
 
-    private float _rightLimitX = Screen.width * (1 - _limitFactor);
+    private float _rightLimitX = Screen.width * (1 - _limitFactorX);
 
-    private float _topLimitY = Screen.height * (1 - _limitFactor);
+    private float _topLimitY = Screen.height * (1 - _limitFactorY);
 
-    private float _bottomLimitY = Screen.height * _limitFactor;
+    private float _bottomLimitY = Screen.height * _limitFactorY;
     private List<float> _speedHistory = new List<float>();
     private float _meanSpeedRate = 0.25f;
     public float _meanSpeed = 0.0f;
@@ -115,13 +117,16 @@ public class CarMovingBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {   
+        this._viewPosition = this._view.GetComponent<Tobii.Gaming.ViewHandler>().GetViewCoord();
+        //Debug.Log(Input.mousePosition.x);
+        //Debug.Log(this._viewPosition.x);
         HandleTreeSound();
         HandleVolume();
         
         _countdownText.text = "Fix at the car to begin";
         //Debug.Log(this._start);
         if(!this._start) {
-            CheckStart(new Vector2(Input.mousePosition.x, Input.mousePosition.y));
+            CheckStart(this._viewPosition);
         }
 
         if(this._start) {
@@ -141,10 +146,13 @@ public class CarMovingBehaviour : MonoBehaviour
             // Debug.Log("Mean Speed: " + this._meanSpeed);
 
             // move the car when mouse pressed
-            if (Input.GetMouseButton(0))
-            {
-                float mousePosX = Input.mousePosition.x;
-                float mousePosY = Input.mousePosition.y;
+            // if (Input.GetMouseButton(0))
+            // {
+                float mousePosX = this._viewPosition.x;
+                float mousePosY = this._viewPosition.y;
+
+                Debug.Log(Input.mousePosition.x);
+                Debug.Log(this._viewPosition.x);
 
                 // Debug.Log("mid X:" + screenMiddleX + ", mid Y :" + screenMiddleY  + ", left lim X :" + leftLimitX + ", right lim X :" + rightLimitX
                 //  + ", top lim Y :" + topLimitY + ", bot lim Y :" + bottomLimitY + ", pos X :" +mousePosX + ", pos Y :" + mousePosY);
@@ -163,12 +171,12 @@ public class CarMovingBehaviour : MonoBehaviour
                 else if (mousePosX > this._rightLimitX)
                     _turnAngle = this._maxAngle;
 
-            } else {
+            // } else {
                 if (this._speed > 0)
                     this._speed -= this. _speed * Time.deltaTime;
                 if (this._turnAngle != 0)
                     this._turnAngle -= this._turnAngle * Time.deltaTime;
-            }
+            // }
 
             transform.Translate(new Vector3(0, 0, _speed * Time.deltaTime)); // apply speed
             transform.Rotate(0.0f, Time.deltaTime * this._sensitivity * _turnAngle, 0.0f); // apply rotation

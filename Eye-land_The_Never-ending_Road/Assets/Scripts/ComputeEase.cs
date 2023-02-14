@@ -29,16 +29,18 @@ public class ComputeEase : MonoBehaviour
         this._traveledDistanceRatio = Mathf.Clamp(this._road.GetComponent<RoadGeneratorBehaviour>().GetPlayerDistance() / 1000f, 0f, 1f);
         
         this._disturbRatio = Mathf.Clamp(1f - (this._oculo.GetComponent<OculoBehaviour>().GetTheNumberOfFixationsInLastNSecond() / 10f),  0f, 1f); // base the ratio on 10 fixations
-        //this._jerksRatio
+        this._jerksRatio = Mathf.Clamp(1f - (this._oculo.GetComponent<OculoBehaviour>().GetTheNumberOfObjectJerkInLastNSecond() / 20f),  0f, 1f);
         //this._pupilSizeRatio
     }
 
     void ComputeAllRatios() {
-        float currentRatio = this._traveledDistanceRatio * 0.1f +
-                            this._averageSpeedRatio * this._onRoadRatio * 0.55f +
-                            this._disturbRatio * 0.35f +
-                            this._jerksRatio * 0.0f +
-                            this._pupilSizeRatio * 0.0f;
+        float currentRatio = Mathf.Clamp(
+                                this._traveledDistanceRatio * 0.15f +
+                                this._averageSpeedRatio * this._onRoadRatio * 0.6f +
+                                this._disturbRatio * 0.25f +
+                                this._jerksRatio * 0.15f +
+                                this._pupilSizeRatio * 0.0f,
+                            0f, 1f);
         this._totalRatioHistory.RemoveAt(0);
         this._totalRatioHistory.Add(currentRatio);
 
