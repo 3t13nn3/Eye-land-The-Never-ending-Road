@@ -19,6 +19,7 @@ public class BeginGameManager : MonoBehaviour
         SceneManager.UnloadSceneAsync("MenuScene");
         SceneManager.UnloadSceneAsync("MenuBackGroundScene");
         SceneManager.LoadScene("Main Scene");
+        SceneManager.LoadScene("View", LoadSceneMode.Additive);
         
     }
 
