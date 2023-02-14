@@ -28,6 +28,13 @@ public class EndGameManager : MonoBehaviour
     private void Start()
     {
         replayGame = false;
+        GameObject.Find("Car").GetComponent<AudioSource>().Stop();
+        GameObject.Find("Music").GetComponent<AudioSource>().Stop();
+        GameObject[] d = GameObject.FindGameObjectsWithTag("disturb");
+        foreach (var e in d)
+        {
+            e.GetComponent<AudioSource>().volume = 0;
+        }
     }
 
     void LateUpdate()

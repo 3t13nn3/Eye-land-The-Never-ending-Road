@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 using System;
 using Random = UnityEngine.Random;
@@ -345,6 +346,8 @@ public class RoadGeneratorBehaviour : MonoBehaviour
             Vector3 rot = new Vector3(0f, Random.Range(-1.5f, 1.5f), Random.Range(-1.5f, 1.5f));
 
             GameObject instance = Instantiate(this._bread);
+            if(SceneManager.GetActiveScene () == SceneManager.GetSceneByName("Main Scene"))
+                instance.GetComponent<AudioSource>().Play();
             this._allBreadsPos.Add(pos);
             this._allBreadsRot.Add(rot);
             this._allBreads.Add(instance);
