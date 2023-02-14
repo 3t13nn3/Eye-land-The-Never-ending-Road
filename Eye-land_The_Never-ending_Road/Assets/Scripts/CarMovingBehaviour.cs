@@ -61,7 +61,7 @@ public class CarMovingBehaviour : MonoBehaviour
     }
 
     void HandleVolume() {
-        this.GetComponent<AudioSource>().volume = (this._speed*2f / this._maxSpeed) / 3f;
+        this.GetComponent<AudioSource>().volume = (this._speed*2f / this._maxSpeed);
         this.GetComponent<AudioSource>().pitch = (this._speed / this._maxSpeed) * 1.2f;
     }
 
@@ -269,9 +269,7 @@ public class CarMovingBehaviour : MonoBehaviour
         if (collision.gameObject.tag == "tree" || collision.gameObject.tag == "wall")
         {
             Debug.Log("HITTING AN END GAME ELEMENT");
-            this._speed = 0;
             this.GetComponent<AudioSource>().volume = 0;
-            Time.timeScale = 0;
             SceneManager.LoadScene("GameOverScene", LoadSceneMode.Additive);
         }
     }

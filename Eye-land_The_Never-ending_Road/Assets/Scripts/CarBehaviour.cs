@@ -30,7 +30,7 @@ public class CarBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {   
-        //  HandleMenuCamera();
+        
         this._allCurves = rg.GetComponent<RoadGeneratorBehaviour>()._allCurves;
         if(!this._start) {
             if(this._allCurves.Count > 2) {
@@ -69,16 +69,5 @@ public class CarBehaviour : MonoBehaviour
 
         }
         
-    }
-
-    void HandleMenuCamera() {
-        Scene scene = SceneManager.GetActiveScene();
-
-        // Check if the name of the current Active Scene is your first Scene.
-        if (scene.name == "MenuScene")
-        {
-            Debug.Log("YES");
-            //scene.SetComponent<MainCamera>() =  GameObject.Find("Main Camera");
-        }
     }
 }
