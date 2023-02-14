@@ -7,6 +7,7 @@ using System;
 public class OculoBehaviour : MonoBehaviour
 {
     public GameObject _RoadGenerator;
+    public GameObject car;
 
     private List<GameObject> _trees;
     private List<GameObject> _breads;
@@ -20,8 +21,17 @@ public class OculoBehaviour : MonoBehaviour
     private float _lookTimeDisturb = 0f;
     private bool _isLookingDisturb = false;
     // Start is called before the first frame update
+    
+    private int rectWidth = 15;
+    private int rectHeight = 10;
+    private Rect fixationZone;
+    private float fixationTimer = 0.0f;
+    private int fixationCount = 0;
+
     void Start()
     {
+        this.car = GameObject.Find("Car");
+
         this._trees = this._RoadGenerator.GetComponent<RoadGeneratorBehaviour>()._allTrees;
         this._trees = this._RoadGenerator.GetComponent<RoadGeneratorBehaviour>()._allBreads;
 
@@ -29,6 +39,8 @@ public class OculoBehaviour : MonoBehaviour
         {
             this._fixations.Add(new Dictionary<int, int>());
         }
+
+        // this.fixationZone = null;
     }
 
     // Update is called once per frame
@@ -39,6 +51,42 @@ public class OculoBehaviour : MonoBehaviour
         HandleFixationHistory();
         CheckIfLookAtDisturbing(new Vector2(mousePos.x, mousePos.y));
         // Debug.Log("Count of fixation in the last " + this._FREQ_RECOVER_FIXATION + " seconds : " + GetTheNumberOfFixationsInLastNSecond() + " on " + GetTheNumberOfObjectFixedInLastNSecond() + " objects.");
+        
+        if (car.GetComponent<CarMovingBehaviour>().gameStart())
+            this.CheckJerks(mousePos);
+    }
+
+    private void CheckJerks(Vector2 eyePosition)
+    {
+        // if eye is into fixation zone
+        if (this.fixationZone.Contains(eyePosition))
+        {
+            Debug.Log("eye (" + eyePosition + ") into fixation zone, fixed time : " + this.fixationTimer);
+            // increase fixation time
+            this.fixationTimer += Time.deltaTime;
+            // if fixation time is higher than FIXATION_VALUE then we count it as a fixation
+            if (this.fixationTimer > this._FIXATION_VALUE)
+            {
+                this.fixationCount++;
+                this.fixationTimer = 0.0f;
+                Debug.Log("add fixation count : " + this.fixationCount);
+            }
+        }
+        // else create another fixation zone since user looks at another position
+        else
+        {
+            this.fixationZone = new Rect(eyePosition.x - (this.rectWidth/2), eyePosition.y - (this.rectHeight/2), 
+                this.rectWidth, this.rectHeight);
+            Debug.Log("eye (" + eyePosition + ") not into zone, create new zone : " + this.fixationZone);
+        }
+    }
+
+    public int GetNbOfJerks()
+    {
+        int nbOfJerks = this.fixationCount;
+        this.fixationTimer = 0.0f;
+        this.fixationCount = 0;
+        return nbOfJerks;
     }
 
 

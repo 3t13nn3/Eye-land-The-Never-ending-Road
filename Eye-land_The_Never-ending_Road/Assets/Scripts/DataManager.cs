@@ -42,7 +42,7 @@ public class DataManager : MonoBehaviour
                 if (this.elapsedTime > 0 && this.elapsedTime%10 == 0)
                 {
                     int distance = rg.GetComponent<RoadGeneratorBehaviour>().GetPlayerDistance();
-                    int nbOfJerks = 0;
+                    int nbOfJerks = oc.GetComponent<OculoBehaviour>().GetNbOfJerks();
                     int nbLookDisruptive = oc.GetComponent<OculoBehaviour>().GetTheNumberOfFixationsInLastNSecond();
                     float meanOnRoadRate = car.GetComponent<CarMovingBehaviour>().GetOnOffRoadRatio();
                     float meanSpeed = car.GetComponent<CarMovingBehaviour>().GetMeanSpeed();
