@@ -61,7 +61,7 @@ public class OculoBehaviour : MonoBehaviour
         // if eye is into fixation zone
         if (this.fixationZone.Contains(eyePosition))
         {
-            Debug.Log("eye (" + eyePosition + ") into fixation zone, fixed time : " + this.fixationTimer);
+            // Debug.Log("eye (" + eyePosition + ") into fixation zone, fixed time : " + this.fixationTimer);
             // increase fixation time
             this.fixationTimer += Time.deltaTime;
             // if fixation time is higher than FIXATION_VALUE then we count it as a fixation
@@ -69,7 +69,7 @@ public class OculoBehaviour : MonoBehaviour
             {
                 this.fixationCount++;
                 this.fixationTimer = 0.0f;
-                Debug.Log("add fixation count : " + this.fixationCount);
+                // Debug.Log("add fixation count : " + this.fixationCount);
             }
         }
         // else create another fixation zone since user looks at another position
@@ -77,7 +77,7 @@ public class OculoBehaviour : MonoBehaviour
         {
             this.fixationZone = new Rect(eyePosition.x - (this.rectWidth/2), eyePosition.y - (this.rectHeight/2), 
                 this.rectWidth, this.rectHeight);
-            Debug.Log("eye (" + eyePosition + ") not into zone, create new zone : " + this.fixationZone);
+            // Debug.Log("eye (" + eyePosition + ") not into zone, create new zone : " + this.fixationZone);
         }
     }
 

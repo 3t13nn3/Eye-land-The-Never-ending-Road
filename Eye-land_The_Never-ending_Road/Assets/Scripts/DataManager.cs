@@ -9,6 +9,7 @@ public class DataManager : MonoBehaviour
     public GameObject car;
     [SerializeField] GameObject rg;
     [SerializeField] GameObject oc;
+    private int traveledDistance;
     private float timer;
     private int elapsedTime;
     private bool save;
@@ -20,12 +21,13 @@ public class DataManager : MonoBehaviour
     void Start()
     {
         this.car = GameObject.Find("Car");
+        this.traveledDistance = 0;
         this.timer = 0.0f;
         this.elapsedTime = 0;
         this.save = false;
         this.fileName = "gameData-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".csv";
         this.filePath = Application.dataPath + "/Data/" + fileName;
-        this.csvHeader = "totalDistance, nbOfJerks, nbLookDisruptive, OnRoadRate, meanSpeed";
+        this.csvHeader = "distance, nbOfJerks, nbLookDisruptive, OnRoadRate, meanSpeed";
     }
 
     // Update is called once per frame
@@ -41,7 +43,8 @@ public class DataManager : MonoBehaviour
                 // every 10 seconds we save a line of data into a csv file of current game
                 if (this.elapsedTime > 0 && this.elapsedTime%10 == 0)
                 {
-                    int distance = rg.GetComponent<RoadGeneratorBehaviour>().GetPlayerDistance();
+                    int distance = rg.GetComponent<RoadGeneratorBehaviour>().GetPlayerDistance() - this.traveledDistance;
+                    this.traveledDistance = rg.GetComponent<RoadGeneratorBehaviour>().GetPlayerDistance();
                     int nbOfJerks = oc.GetComponent<OculoBehaviour>().GetNbOfJerks();
                     int nbLookDisruptive = oc.GetComponent<OculoBehaviour>().GetTheNumberOfFixationsInLastNSecond();
                     float meanOnRoadRate = car.GetComponent<CarMovingBehaviour>().GetOnOffRoadRatio();
