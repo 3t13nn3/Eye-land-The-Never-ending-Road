@@ -28,6 +28,13 @@ public class EndGameManager : MonoBehaviour
     private void Start()
     {
         replayGame = false;
+        GameObject.Find("Car").GetComponent<AudioSource>().Stop();
+        GameObject.Find("Music").GetComponent<AudioSource>().Stop();
+        GameObject[] d = GameObject.FindGameObjectsWithTag("disturb");
+        foreach (var e in d)
+        {
+            e.GetComponent<AudioSource>().volume = 0;
+        }
     }
 
     void LateUpdate()
@@ -75,35 +82,40 @@ public class EndGameManager : MonoBehaviour
         List<playersScore> listAllScore = LoadFromJson();
         Boolean delete = false;
         Boolean find = false;
-        foreach (playersScore pl in listAllScore)
+        if (listAllScore != null)
         {
-            if (_playersScore.playerName == pl.playerName)
-            {
-                //Debug.Log("on a trouver ce player");
-                find = true;
-                if (_playersScore.playerScore > pl.playerScore)
-                {
-                    listAllScore.Remove(pl);
-                    delete = true;
-                    break;
-                }
-            }
-        }
-        if (delete)
-        {
-            listAllScore.Add(_playersScore);
-            File.Delete(Application.dataPath + "/PlayersScores.json");
             foreach (playersScore pl in listAllScore)
             {
-                string scorePlayer = JsonUtility.ToJson(pl);
-                File.AppendAllText(Application.dataPath + "/PlayersScores.json", scorePlayer);
+                if (_playersScore.playerName == pl.playerName)
+                {
+                    //Debug.Log("on a trouver ce player");
+                    find = true;
+                    if (_playersScore.playerScore > pl.playerScore)
+                    {
+                        listAllScore.Remove(pl);
+                        delete = true;
+                        break;
+                    }
+                }
             }
+            if (delete)
+            {
+                listAllScore.Add(_playersScore);
+                File.Delete(Application.persistentDataPath + "/PlayersScores.json");
+                foreach (playersScore pl in listAllScore)
+                {
+                    string scorePlayer = JsonUtility.ToJson(pl);
+                    File.AppendAllText(Application.persistentDataPath + "/PlayersScores.json", scorePlayer);
+                }
+            } 
+            
         }
-        else {
+        if (!delete)
+        {
             if (!find)
             {
                 string scorePlayer = JsonUtility.ToJson(_playersScore);
-                File.AppendAllText(Application.dataPath + "/PlayersScores.json", scorePlayer);
+                File.AppendAllText(Application.persistentDataPath + "/PlayersScores.json", scorePlayer);
             }
         }
     }
@@ -111,17 +123,21 @@ public class EndGameManager : MonoBehaviour
     
     public static List<playersScore> LoadFromJson()
     {
-   
-        string jsonString = File.ReadAllText (Application.dataPath + "/PlayersScores.json");
-        List<String> jsonListstring = jsonString.Split('}').ToList();
-        List<playersScore> listAllScore = new List<playersScore>();
-        for (int i = 0; i < jsonListstring.Count -1 ; i++)
+
+        if (File.Exists(Application.persistentDataPath+ "/PlayersScores.json"))
         {
-            jsonListstring[i] = jsonListstring[i] + "}";
-            Debug.Log(jsonListstring[i]);
-            listAllScore.Add(JsonUtility.FromJson<playersScore>(jsonListstring[i]));
+            string jsonString = File.ReadAllText (Application.persistentDataPath + "/PlayersScores.json");
+            List<String> jsonListstring = jsonString.Split('}').ToList();
+            List<playersScore> listAllScore = new List<playersScore>();
+            for (int i = 0; i < jsonListstring.Count -1 ; i++)
+            {
+                jsonListstring[i] = jsonListstring[i] + "}";
+                Debug.Log(jsonListstring[i]);
+                listAllScore.Add(JsonUtility.FromJson<playersScore>(jsonListstring[i]));
+            }
+            return listAllScore;
         }
-        return listAllScore;
+        return null;
     }
 }
 

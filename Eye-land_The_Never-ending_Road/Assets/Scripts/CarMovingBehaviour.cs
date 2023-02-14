@@ -7,10 +7,12 @@ using UnityEngine;
 
 public class CarMovingBehaviour : MonoBehaviour
 {
+    public GameObject _RoadGenerator;
+    private bool _playMusic = false;
     public Text _countdownText;
     private bool _start = false;
     private float _startTime = 0f;
-    private float _startTimetoWait = 4f;
+    private float _startTimetoWait = 3f;
     private int _meanTime = 20;
     private int _meanSpeedTimeLimit = 10;
     private int _meanOnRoadTimeLimit = 10;
@@ -23,7 +25,7 @@ public class CarMovingBehaviour : MonoBehaviour
 
     private float _turnAngle;
 
-    private float _maxSpeed = 30.0f;
+    public float _maxSpeed = 30.0f;
 
     private float _maxAngle = 15.0f;
 
@@ -58,6 +60,24 @@ public class CarMovingBehaviour : MonoBehaviour
        this._turnAngle = 0.0f;
     }
 
+    void HandleVolume() {
+        this.GetComponent<AudioSource>().volume = (this._speed*2f / this._maxSpeed);
+        this.GetComponent<AudioSource>().pitch = (this._speed / this._maxSpeed) * 1.2f;
+    }
+
+    void HandleTreeSound() {
+        List<GameObject> trees = this._RoadGenerator.GetComponent<RoadGeneratorBehaviour>()._allTrees;
+        if(trees.Count > 0) {
+            foreach (var t in trees)
+            {
+                if(Vector3.Distance(t.transform.position, this.transform.position) < 5f && this._speed > this._maxSpeed - 2f) {
+                    if(!t.GetComponent<AudioSource>().isPlaying)
+                        t.GetComponent<AudioSource>().Play();
+                }
+            }
+        }
+    }
+
     void CheckStart(Vector2 _position) {
         Vector3 currentPos = new Vector3(_position.x, _position.y, Camera.main.nearClipPlane);
 
@@ -68,14 +88,25 @@ public class CarMovingBehaviour : MonoBehaviour
                 this._startTime += Time.deltaTime;
                 if(this._startTime >= this._startTimetoWait){
                     this._startTime = 0f;
+
                     this._start = true;
                 }
+                // Starting music
+                if(!this._playMusic) {
+                    GameObject.Find("Music").GetComponent<AudioSource>().Play();
+                    this._playMusic = true;
+                }
+                    
                 float timeLeft = this._startTimetoWait - _startTime;
                 _countdownText.text = "Be ready:\n" + timeLeft.ToString("0.0");
             } else {
+                GameObject.Find("Music").GetComponent<AudioSource>().Stop();
+                this._playMusic = false;
                 this._startTime = 0f;
             }
         } else {
+            GameObject.Find("Music").GetComponent<AudioSource>().Stop();
+            this._playMusic = false;
             this._startTime = 0f;
         }
         
@@ -83,10 +114,10 @@ public class CarMovingBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {   
+        HandleTreeSound();
+        HandleVolume();
         
         _countdownText.text = "Fix at the car to begin";
-
-
         //Debug.Log(this._start);
         if(!this._start) {
             CheckStart(new Vector2(Input.mousePosition.x, Input.mousePosition.y));
@@ -238,7 +269,7 @@ public class CarMovingBehaviour : MonoBehaviour
         if (collision.gameObject.tag == "tree" || collision.gameObject.tag == "wall")
         {
             Debug.Log("HITTING AN END GAME ELEMENT");
-            Time.timeScale = 0;
+            this.GetComponent<AudioSource>().volume = 0;
             SceneManager.LoadScene("GameOverScene", LoadSceneMode.Additive);
         }
     }

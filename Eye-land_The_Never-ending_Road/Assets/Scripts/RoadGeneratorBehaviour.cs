@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 using System;
 using Random = UnityEngine.Random;
@@ -13,6 +14,7 @@ public class RoadGeneratorBehaviour : MonoBehaviour
         SOUTH, WEST, NORTH, EAST
     }
 
+    public GameObject _ease;
     private int _playerDistance = 0;
     public float _difficulty = 0.5f;
 
@@ -293,7 +295,7 @@ public class RoadGeneratorBehaviour : MonoBehaviour
                 GameObject instance = Instantiate(this._tree);
                 this._allTrees.Add(instance);
 
-                Vector3 rot = new Vector3(0f, Random.Range(-0.5f, 0.5f), 0f);
+                Vector3 rot = new Vector3(0f, Random.Range(-0.65f, 0.65f), 0f);
                 this._allTreesRot.Add(rot);
             }
         }
@@ -344,6 +346,8 @@ public class RoadGeneratorBehaviour : MonoBehaviour
             Vector3 rot = new Vector3(0f, Random.Range(-1.5f, 1.5f), Random.Range(-1.5f, 1.5f));
 
             GameObject instance = Instantiate(this._bread);
+            if(SceneManager.GetActiveScene () == SceneManager.GetSceneByName("Main Scene"))
+                instance.GetComponent<AudioSource>().Play();
             this._allBreadsPos.Add(pos);
             this._allBreadsRot.Add(rot);
             this._allBreads.Add(instance);
@@ -401,11 +405,16 @@ public class RoadGeneratorBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if(this._ease != null) {
+            this._difficulty = this._ease.GetComponent<ComputeEase>().GetEaseRatio();
+        }
+
         // First tile is always the same, straight
         {  
             this._tile.transform.position = new Vector3(0f, 0.5f, 0f);
             this._tile.transform.localScale = new Vector3(this._tileDimension.x, this._tileThickness, this._tileDimension.y);
             GameObject instance = Instantiate(this._tile);
+
             this._roadTiles.Add(instance);
             this._directionHistory.Add((int)Direction.NORTH);
 
@@ -414,24 +423,27 @@ public class RoadGeneratorBehaviour : MonoBehaviour
                 new Vector3(0f, 0.555f, -this._tileDimension.y/2),
                 new Vector3(0f, 0.555f, 0f),
                 new Vector3(0f, 0.555f, 0f),
-                new Vector3(0f, 0.555f, this._tileDimension.y/2),
+                new Vector3(0f, 0.555f, -this._tileDimension.y/2),
                 }
             );
             this._allCurves.Add(c);
             this._allCurvesGO.Add(c.GenerateBezierRoad(this._difficulty));
         }
+        //GenerateRoad(this._allCurves.Count);
 
+        // for (int i = 1; i < 1; i++)
+        // {
+        //     //if(this._ease != null) {
+        //         this._difficulty = 0.5f;
+        //     //}
+        //     GenerateNextTile();
+        //     GenerateRoad(i);
+        //     GeneratingTree();
+        //     //GeneratingBread();
+        // }
 
-        for (int i = 1; i < this._totalNumberOfTiles; i++)
-        {
-            GenerateNextTile();
-            GenerateRoad(i);
-            GeneratingTree();
-            //GeneratingBread();
-        }
-
-        GenerateEnv(this._totalNumberOfTiles);
-
+        GenerateEnv(1);
+        
         /*
         // Generating all the road as one object
         QuadraticBezierCurve ccc = gameObject.AddComponent<QuadraticBezierCurve>();
@@ -444,7 +456,10 @@ public class RoadGeneratorBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Debug.Log(GetPlayerDistance());
+        if(this._ease != null) {
+            this._difficulty = this._ease.GetComponent<ComputeEase>().GetEaseRatio();
+        }
+
         GameObject car = GameObject.Find("Car");
         Vector3 pos = car.transform.position;
         //car.transform.position = new Vector3(car.transform.position.x, car.transform.position.y, car.transform.position.z + 10f);
@@ -485,8 +500,8 @@ public class RoadGeneratorBehaviour : MonoBehaviour
                 GenerateEnv(1);
                 GeneratingTree();
                 GeneratingBread();
-                this._difficulty += 0.04f;
-                if(this._difficulty > 1f) this._difficulty = 1f;
+                // this._difficulty += 0.04f;
+                // if(this._difficulty > 1f) this._difficulty = 1f;
             }
             BreadsAnimation();
             TreesAnimation();
@@ -501,7 +516,7 @@ public class RoadGeneratorBehaviour : MonoBehaviour
         for (int i = 0; i < this._allEnv.Count; i++)
         {
             float elapsedTime = currentTime - this._startTime[i];
-            float t = elapsedTime / this._randValueToSpawnEnv / 2;
+            float t = elapsedTime / this._randValueToSpawnEnv / 1.8f;
             //t = Mathf.Clamp01(t);
             for (int j = 0; j < this._allEnv[i].Count; j++)
             {

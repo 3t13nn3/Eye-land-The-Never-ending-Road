@@ -758,6 +758,7 @@ GameObject:
   - component: {fileID: 1307803559}
   - component: {fileID: 1307803558}
   - component: {fileID: 1307803557}
+  - component: {fileID: 1307803556}
   m_Layer: 5
   m_Name: scoreBtn
   m_TagString: Untagged
@@ -785,6 +786,18 @@ RectTransform:
   m_AnchoredPosition: {x: -0.0012889, y: -75}
   m_SizeDelta: {x: 324.5357, y: 55}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1307803556
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1307803554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14c7dfb024d884a2b8328fc1f9d4613e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1307803557
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -828,7 +841,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1307803558}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1307803556}
+        m_TargetAssemblyTypeName: SceneLoader, Assembly-CSharp
+        m_MethodName: LoadScene
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: ScoresScene
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1307803558
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1484,8 +1509,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.000015259, y: 107}
-  m_SizeDelta: {x: 193.1422, y: 51.4816}
+  m_AnchoredPosition: {x: 93, y: 107}
+  m_SizeDelta: {x: 193.15625, y: 51.4816}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2130215348
 MonoBehaviour:
@@ -1507,7 +1532,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: MENU
+  m_text: 'Eye-land: The       Never-ending Road'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1534,13 +1559,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 54
-  m_fontSizeBase: 54
+  m_fontSize: 45
+  m_fontSizeBase: 45
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 1
+  m_fontStyle: 5
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -1570,7 +1595,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: -0.000030517578, z: -0.56884766, w: 0}
+  m_margin: {x: -267.3739, y: 4.6649466, z: -79.96724, w: -8.895721}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
