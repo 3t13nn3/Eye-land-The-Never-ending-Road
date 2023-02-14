@@ -268,6 +268,7 @@ public class CarMovingBehaviour : MonoBehaviour
     void OnCollisionEnter(Collision collision) {
         if (collision.gameObject.tag == "tree" || collision.gameObject.tag == "wall")
         {
+            Time.timeScale = 0;
             Debug.Log("HITTING AN END GAME ELEMENT");
             this.GetComponent<AudioSource>().volume = 0;
             SceneManager.LoadScene("GameOverScene", LoadSceneMode.Additive);
