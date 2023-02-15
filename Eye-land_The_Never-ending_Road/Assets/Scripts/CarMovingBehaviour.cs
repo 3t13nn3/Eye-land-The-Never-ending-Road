@@ -181,9 +181,10 @@ public class CarMovingBehaviour : MonoBehaviour
             transform.Translate(new Vector3(0, 0, _speed * Time.deltaTime)); // apply speed
             transform.Rotate(0.0f, Time.deltaTime * this._sensitivity * _turnAngle, 0.0f); // apply rotation
 
-            if(Input.GetKey(KeyCode.Q))
+            if(Input.GetKey(KeyCode.F1))
             {
-                SceneManager.LoadScene("GameOverScene", LoadSceneMode.Additive);
+                if(null == GameObject.Find("CanvasEnd"))
+                    SceneManager.LoadScene("GameOverScene", LoadSceneMode.Additive);
             }
         }
     }

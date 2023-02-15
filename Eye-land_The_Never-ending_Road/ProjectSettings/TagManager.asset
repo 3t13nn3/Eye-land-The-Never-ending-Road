@@ -9,6 +9,9 @@ TagManager:
   - tree
   - wall
   - disturb
+  - container
+  - template
+  - menu
   layers:
   - Default
   - TransparentFX

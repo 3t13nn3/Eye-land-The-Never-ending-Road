@@ -13,6 +13,7 @@ public class ComputeEase : MonoBehaviour
     private bool _mode;
     // Define Objects to recover data from
     public GameObject _road ;
+    public GameObject _data ;
     public GameObject _car;
     public GameObject _oculo;
 
@@ -32,20 +33,21 @@ public class ComputeEase : MonoBehaviour
     void ComputeFilesToShareWithPython() {
         using (StreamWriter writer = new StreamWriter(System.IO.Directory.GetCurrentDirectory() + "/Python/data_in.txt"))
         {
-            writer.WriteLine(this._traveledDistanceRatio);
-            writer.WriteLine(this._jerksRatio);
-            writer.WriteLine(this._disturbRatio);
-            writer.WriteLine(this._onRoadRatio);
-            writer.WriteLine(this._averageSpeedRatio);
+            List<float> d = this._data.GetComponent<DataManager>().getAllDataForPrediction();
+            writer.WriteLine(d[0]);
+            writer.WriteLine(d[1]);
+            writer.WriteLine(d[2]);
+            writer.WriteLine(d[3]);
+            writer.WriteLine(d[4]);
         }
 
         using (StreamReader reader = new StreamReader(System.IO.Directory.GetCurrentDirectory() + "/Python/predict.txt"))
         {
             int r = int.Parse(reader.ReadLine());
             if(r == 1) {
-                this._totalRatio += 0.05f;
+                this._totalRatio += 0.01f;
             } else {
-                this._totalRatio += 0.05f;
+                this._totalRatio += 0.01f;
             }
         }
         
@@ -79,10 +81,13 @@ public class ComputeEase : MonoBehaviour
     void Start()
     {
         this._mode = GameObject.Find("modeBtn").GetComponent<ModeHandler>()._mode;
-        if(GameObject.Find("CanvasMenu") != null)
-            Destroy(GameObject.Find("CanvasMenu"));
-        if(GameObject.Find("CanvasEnd") != null)
-            Destroy(GameObject.Find("CanvasEnd"));
+        foreach (var e in GameObject.FindGameObjectsWithTag("menu"))
+        {
+            if(e != null)
+            Destroy(e);
+        }
+        
+
 
         if(this._mode) {
             for (int i = 0; i < 100; i++)

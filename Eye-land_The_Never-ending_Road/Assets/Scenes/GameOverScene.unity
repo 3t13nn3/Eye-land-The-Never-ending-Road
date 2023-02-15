@@ -1333,7 +1333,7 @@ GameObject:
   - component: {fileID: 812095271}
   m_Layer: 5
   m_Name: CanvasEnd
-  m_TagString: Untagged
+  m_TagString: menu
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

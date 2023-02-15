@@ -9,6 +9,9 @@ public class BeginGameManager : MonoBehaviour
     public static void loadMenuScene()
     {
         //Time.timeScale = 0;
+        if(null != GameObject.Find("CanvasEnd")) {
+            Destroy(GameObject.Find("CanvasEnd"));
+        }
         SceneManager.LoadScene("MenuScene", LoadSceneMode.Additive);
     }
     
