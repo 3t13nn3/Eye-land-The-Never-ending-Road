@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.UI;
 using UnityEngine;
 
 public class ComputeEase : MonoBehaviour
 {
+    private bool _mode;
     // Define Objects to recover data from
     public GameObject _road ;
     public GameObject _car;
@@ -49,6 +51,8 @@ public class ComputeEase : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        this._mode = GameObject.Find("modeBtn").GetComponent<ModeHandler>()._mode;
+        Destroy(GameObject.Find("CanvasMenu"));
         for (int i = 0; i < 100; i++)
         {
             this._totalRatioHistory.Add(0.25f);
@@ -58,8 +62,14 @@ public class ComputeEase : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        PreComputeAllRatios();
-        ComputeAllRatios();
+        if(this._mode) {
+            Debug.Log("EASE METHOD 1");
+            PreComputeAllRatios();
+            ComputeAllRatios();
+        } else {
+            Debug.Log("EASE METHOD 2");
+        }
+        
         // Debug.Log("Ratio of On Road " + this._onRoadRatio);
         // Debug.Log("Ratio of Speed " + this._averageSpeedRatio);
         // Debug.Log("Ratio of Distance " + this._traveledDistanceRatio);
