@@ -1,0 +1,5 @@
+distance, nbOfJerks, nbLookDisruptive, OnRoadRate, meanSpeed
+10, 34, 1, 1, 18.70354
+20, 34, 0, 0.775, 19.22255
+110, 26, 2, 0.925, 30.97845
+90, 21, 2, 0.95, 29.76682

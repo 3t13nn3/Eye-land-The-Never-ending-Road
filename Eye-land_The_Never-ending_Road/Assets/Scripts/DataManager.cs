@@ -17,6 +17,12 @@ public class DataManager : MonoBehaviour
     private string filePath;
     private string csvHeader;
 
+    private int distance;
+    private int nbOfJerks;
+    private int nbLookDisruptive;
+    private float meanOnRoadRate;
+    private float meanSpeed;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -26,6 +32,7 @@ public class DataManager : MonoBehaviour
         this.elapsedTime = 0;
         this.save = false;
         this.fileName = "gameData-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".csv";
+        Directory.CreateDirectory(Application.dataPath + "/Data/");
         this.filePath = Application.dataPath + "/Data/" + fileName;
         this.csvHeader = "distance, nbOfJerks, nbLookDisruptive, OnRoadRate, meanSpeed";
     }
@@ -43,14 +50,14 @@ public class DataManager : MonoBehaviour
                 // every 10 seconds we save a line of data into a csv file of current game
                 if (this.elapsedTime > 0 && this.elapsedTime%10 == 0)
                 {
-                    int distance = rg.GetComponent<RoadGeneratorBehaviour>().GetPlayerDistance() - this.traveledDistance;
+                    this.distance = rg.GetComponent<RoadGeneratorBehaviour>().GetPlayerDistance() - this.traveledDistance;
                     this.traveledDistance = rg.GetComponent<RoadGeneratorBehaviour>().GetPlayerDistance();
-                    int nbOfJerks = oc.GetComponent<OculoBehaviour>().GetNbOfJerks();
-                    int nbLookDisruptive = oc.GetComponent<OculoBehaviour>().GetTheNumberOfFixationsInLastNSecond();
-                    float meanOnRoadRate = car.GetComponent<CarMovingBehaviour>().GetOnOffRoadRatio();
-                    float meanSpeed = car.GetComponent<CarMovingBehaviour>().GetMeanSpeed();
-                    string data = distance.ToString() + ", " + nbOfJerks.ToString() + ", " + nbLookDisruptive.ToString() + ", "
-                    + meanOnRoadRate.ToString() + ", " + meanSpeed.ToString();
+                    this.nbOfJerks = oc.GetComponent<OculoBehaviour>().GetNbOfJerks();
+                    this.nbLookDisruptive = oc.GetComponent<OculoBehaviour>().GetTheNumberOfFixationsInLastNSecond();
+                    this.meanOnRoadRate = car.GetComponent<CarMovingBehaviour>().GetOnOffRoadRatio();
+                    this.meanSpeed = car.GetComponent<CarMovingBehaviour>().GetMeanSpeed();
+                    string data = this.distance.ToString() + ", " + this.nbOfJerks.ToString() + ", " + this.nbLookDisruptive.ToString() + ", "
+                    + this.meanOnRoadRate.ToString() + ", " + this.meanSpeed.ToString();
                     // Debug.Log(this.elapsedTime + " : " + data);
                     this.writeToCsv(data);
                 }
@@ -69,5 +76,16 @@ public class DataManager : MonoBehaviour
         }
         using (StreamWriter streamWriter = File.AppendText(filePath))
             streamWriter.WriteLine(data);
+    }
+
+    public List<float> getAllDataForPrediction()
+    {
+        List<float> allData = new List<float>();
+        allData.Add((float)(this.distance));
+        allData.Add((float)(this.nbOfJerks));
+        allData.Add((float)(this.nbLookDisruptive));
+        allData.Add(this.meanOnRoadRate);
+        allData.Add(this.meanSpeed);
+        return allData;
     }
 }
