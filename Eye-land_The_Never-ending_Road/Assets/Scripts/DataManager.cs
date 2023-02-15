@@ -31,7 +31,7 @@ public class DataManager : MonoBehaviour
         this.timer = 0.0f;
         this.elapsedTime = 0;
         this.save = false;
-        Directory.CreateDirectory(System.IO.Directory.GetCurrentDirectory() + "/Data/");
+        //Directory.CreateDirectory(System.IO.Directory.GetCurrentDirectory() + "/Data/");
         //Debug.Log(System.IO.Directory.GetCurrentDirectory());
         this.fileName = "gameData-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".csv";
         Directory.CreateDirectory(System.IO.Directory.GetCurrentDirectory() + "/Data/");

@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI;
 using UnityEngine;
+using Python.Runtime;
+using System.IO;
+
+using System.Diagnostics;
 
 public class ComputeEase : MonoBehaviour
 {
@@ -24,6 +28,29 @@ public class ComputeEase : MonoBehaviour
     public float _pupilSizeRatio;
 
     public List<float> _totalRatioHistory = new List<float>();
+
+    void ComputeFilesToShareWithPython() {
+        using (StreamWriter writer = new StreamWriter(System.IO.Directory.GetCurrentDirectory() + "/Python/data_in.txt"))
+        {
+            writer.WriteLine(this._traveledDistanceRatio);
+            writer.WriteLine(this._jerksRatio);
+            writer.WriteLine(this._disturbRatio);
+            writer.WriteLine(this._onRoadRatio);
+            writer.WriteLine(this._averageSpeedRatio);
+        }
+
+        using (StreamReader reader = new StreamReader(System.IO.Directory.GetCurrentDirectory() + "/Python/predict.txt"))
+        {
+            int r = int.Parse(reader.ReadLine());
+            if(r == 1) {
+                this._totalRatio += 0.05f;
+            } else {
+                this._totalRatio += 0.05f;
+            }
+        }
+        
+
+    }
 
     void PreComputeAllRatios() {
         this._onRoadRatio = this._car.GetComponent<CarMovingBehaviour>()._meanOnRoad;
@@ -52,31 +79,51 @@ public class ComputeEase : MonoBehaviour
     void Start()
     {
         this._mode = GameObject.Find("modeBtn").GetComponent<ModeHandler>()._mode;
-        Destroy(GameObject.Find("CanvasMenu"));
-        for (int i = 0; i < 100; i++)
-        {
-            this._totalRatioHistory.Add(0.25f);
+        if(GameObject.Find("CanvasMenu") != null)
+            Destroy(GameObject.Find("CanvasMenu"));
+        if(GameObject.Find("CanvasEnd") != null)
+            Destroy(GameObject.Find("CanvasEnd"));
+
+        if(this._mode) {
+            for (int i = 0; i < 100; i++)
+            {
+                this._totalRatioHistory.Add(0.25f);
+            }
+        } else {
+            System.Diagnostics.Process process = new System.Diagnostics.Process();
+            System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+            startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+            startInfo.FileName = "python";
+            startInfo.Arguments = System.IO.Directory.GetCurrentDirectory() + "/Python/predict.py";
+            process.StartInfo = startInfo;
+            process.Start();
+
+            // process.WaitForExit();
+            // process.Close();
         }
+
+        InvokeRepeating("ComputeFilesToShareWithPython", 0.0f, 1f);
+
     }
 
     // Update is called once per frame
     void Update()
-    {
+    {   
+        PreComputeAllRatios();
         if(this._mode) {
-            Debug.Log("EASE METHOD 1");
-            PreComputeAllRatios();
+            UnityEngine.Debug.Log("EASE METHOD 1");
             ComputeAllRatios();
         } else {
-            Debug.Log("EASE METHOD 2");
+            UnityEngine.Debug.Log("EASE METHOD 2");
         }
         
-        // Debug.Log("Ratio of On Road " + this._onRoadRatio);
-        // Debug.Log("Ratio of Speed " + this._averageSpeedRatio);
-        // Debug.Log("Ratio of Distance " + this._traveledDistanceRatio);
-        // Debug.Log("Ratio of Jerks " + this._jerksRatio);
-        // Debug.Log("Ratio of Disturb " + this._disturbRatio);
-        // Debug.Log("Ratio of Pupil Size " + this._pupilSizeRatio);
-        // Debug.Log("EASE RATIO: " + this._totalRatioHistory);
+        // UnityEngine.Debug.Log("Ratio of On Road " + this._onRoadRatio);
+        // UnityEngine.Debug.Log("Ratio of Speed " + this._averageSpeedRatio);
+        // UnityEngine.Debug.Log("Ratio of Distance " + this._traveledDistanceRatio);
+        // UnityEngine.Debug.Log("Ratio of Jerks " + this._jerksRatio);
+        // UnityEngine.Debug.Log("Ratio of Disturb " + this._disturbRatio);
+        // UnityEngine.Debug.Log("Ratio of Pupil Size " + this._pupilSizeRatio);
+        // UnityEngine.Debug.Log("EASE RATIO: " + this._totalRatioHistory);
     }
 
     public float GetEaseRatio() {

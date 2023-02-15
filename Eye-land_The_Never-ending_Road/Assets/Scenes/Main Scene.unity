@@ -1497,7 +1497,7 @@ MonoBehaviour:
   _disturbRatio: 0
   _onRoadRatio: 0
   _averageSpeedRatio: 0
-  _totalRatio: 0
+  _totalRatio: 0.3
   _pupilSizeRatio: 0
   _totalRatioHistory: []
 --- !u!4 &2135236244
