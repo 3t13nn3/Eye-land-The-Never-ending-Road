@@ -25,8 +25,10 @@ public class DataManager : MonoBehaviour
         this.timer = 0.0f;
         this.elapsedTime = 0;
         this.save = false;
+        Directory.CreateDirectory(System.IO.Directory.GetCurrentDirectory() + "/Data/");
+        //Debug.Log(System.IO.Directory.GetCurrentDirectory());
         this.fileName = "gameData-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".csv";
-        this.filePath = Application.dataPath + "/Data/" + fileName;
+        this.filePath = System.IO.Directory.GetCurrentDirectory() + "/Data/" + fileName;
         this.csvHeader = "distance, nbOfJerks, nbLookDisruptive, OnRoadRate, meanSpeed";
     }
 

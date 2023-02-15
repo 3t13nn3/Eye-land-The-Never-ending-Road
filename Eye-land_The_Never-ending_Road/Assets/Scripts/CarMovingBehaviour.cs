@@ -36,7 +36,7 @@ public class CarMovingBehaviour : MonoBehaviour
     private float _screenMiddleY = Screen.height / 2;
 
     private static float _limitFactorX = 0.075f;
-    private static float _limitFactorY = 0.25f;
+    private static float _limitFactorY = 0.24f;
 
     private float _leftLimitX = Screen.width * _limitFactorX;
 
